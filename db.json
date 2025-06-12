@@ -1,0 +1,168 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "name": "Usuario Turista",
+      "email": "tourist@demo.com",
+      "password": "password",
+      "role": "tourist",
+      "avatar": "https://i.pravatar.cc/150?u=tourist1",
+      "preferences": {
+        "adventureTypes": ["Montaña", "Playa", "Cultural", "Aventura"],
+        "sustainability": true
+      },
+      "contactInfo": {
+        "phone": "555-123-4567",
+        "address": "Calle Turista 123, Ciudad"
+      }
+    },
+    {
+      "id": "2",
+      "name": "Agencia EcoAventura",
+      "email": "agency@demo.com",
+      "password": "password",
+      "role": "agency",
+      "avatar": "https://i.pravatar.cc/150?u=agency1",
+      "description": "Ofrecemos las mejores experiencias ecológicas para viajeros responsables y conscientes con el medio ambiente.",
+      "certifications": ["Turismo Sostenible", "Eco-Friendly Certificado"],
+      "contactInfo": {
+        "phone": "555-987-6543",
+        "address": "Av. Naturaleza 456, Ciudad Eco",
+        "email": "agency@demo.com"
+      },
+      "socialLinks": {
+        "facebook": "facebook.com/ecoaventura",
+        "instagram": "instagram.com/ecoaventura_oficial",
+        "whatsapp": "555-987-6543"
+      },
+      "rating": 4.8,
+      "reviewCount": 25,
+      "taxId": "ECOTAX987"
+    }
+  ],
+  "experiences": [
+    {
+      "id": "1",
+      "title": "Senderismo Consciente en la Sierra",
+      "description": "Explora senderos naturales con un enfoque en la flora, fauna local y prácticas de 'no dejar rastro'.",
+      "type": "Naturaleza",
+      "location": "Cusco, Perú (cerca de Pisac)",      "duration": {
+      "value": 4,
+      "unit": "hours"
+    },
+      "price": {
+        "amount": 99,
+        "currency": "EUR"
+      },
+      "images": [
+        "https://images.unsplash.com/photo-1569321633833-df7b730bf57d"
+      ],
+      "isSustainable": true,
+      "ecoCertifications": ["Green Trail Certified"],
+      "sustainablePractices": ["Leave No Trace", "Apoyo a la comunidad local"],
+      "localCommunityImpact": "Parte de los ingresos se destina a la reforestación local.",
+      "agencyId": "2",
+      "maxParticipants": 8,
+      "difficultyLevel": "Moderado",
+      "includedItems": ["Guía experto en ecología", "Snacks orgánicos", "Agua reutilizable"],
+      "requirements": ["Condición física moderada", "Calzado de senderismo", "Botella de agua reutilizable"]
+    },    {      "id": "2",
+      "title": "Ruta Ecológica a Machu Picchu",
+      "description": "Una experiencia inmersiva que combina la historia inca con prácticas de turismo sostenible en la ruta y en el sitio arqueológico.",
+      "type": "Cultural & Ecológico",
+      "location": "Cusco, Perú",
+      "duration": {
+        "value": 2,
+        "unit": "days"
+      },
+      "price": {
+        "amount": 299,
+        "currency": "EUR"
+      },
+      "rating": 4.6,
+      "reviewCount": 18,
+      "images": [
+        "https://images.unsplash.com/photo-1526392060635-9d6019884377"
+      ],
+      "isSustainable": true,
+      "ecoCertifications": ["Sustainable Travel International"],
+      "sustainablePractices": ["Transporte de bajo impacto", "Manejo de residuos", "Conservación del patrimonio"],
+      "localCommunityImpact": "Colaboración con artesanos y proveedores locales en Aguas Calientes.",
+      "agencyId": "2",
+      "maxParticipants": 6,
+      "difficultyLevel": "Moderado",
+      "includedItems": ["Guía especializado", "Transporte ecológico", "Permisos", "Cenas y desayunos sostenibles"],
+      "requirements": ["Preparación para caminatas largas", "Respeto por las normas del sitio"]
+    },
+    {
+      "id": "3",
+      "title": "Expedición Amazónica Sostenible",
+      "description": "Una inmersión profunda en la selva amazónica, enfocada en la observación de vida silvestre y el apoyo a la conservación comunitaria.",      "price": {
+      "amount": 450.00,
+      "currency": "EUR"
+    },
+      "location": "Amazonía, Perú",
+      "duration": {
+        "value": 3,
+        "unit": "days"
+      },
+      "images": [
+        "https://picsum.photos/500/300?random=1"
+      ],
+      "isSustainable": true,
+      "ecoCertifications": ["Rainforest Alliance Certified", "Adventure Green"],
+      "sustainablePractices": ["Zero Waste", "Apoyo a comunidades indígenas", "Protección de la biodiversidad"],
+      "localCommunityImpact": "El 40% de los ingresos beneficia directamente a la comunidad local para educación y salud.",
+      "difficultyLevel": "Moderado a Difícil",
+      "maxParticipants": 10,
+      "languages": ["Español", "Inglés"],
+      "includedItems": ["Alojamiento en lodge ecológico", "Transporte fluvial de bajo impacto", "Guía local bilingüe", "Comidas orgánicas de la región"],
+      "requirements": ["Vacunas al día", "Ropa de manga larga", "Repelente ecológico"]
+    }
+  ],
+  "reservations": [
+    {
+      "id": "1",
+      "userId": "1",
+      "experienceId": "1",
+      "experienceName": "Senderismo Consciente en la Sierra",
+      "date": "2024-07-15T09:00:00.000Z",
+      "participants": 2,
+      "status": "confirmed",
+      "totalPrice": {
+        "amount": 198,
+        "currency": "EUR"
+      },
+      "bookingDate": "2024-06-20T14:30:00.000Z"
+    }
+  ],
+  "reviews": [
+    {
+      "id": "1",
+      "userId": "1",
+      "userName": "Usuario Turista",
+      "experienceId": "1",
+      "rating": 5,
+      "comment": "¡Una experiencia realmente consciente y hermosa! El guía compartió mucha información sobre la ecología local.",
+      "date": "2024-07-16T18:00:00.000Z"
+    },
+    {
+      "id": "2",
+      "userId": "1",
+      "userName": "Usuario Turista",
+      "agencyId": "2",
+      "rating": 5,
+      "comment": "Agencia EcoAventura es top, su compromiso con el turismo sostenible es evidente en cada detalle.",
+      "date": "2024-05-15"
+    },
+    {
+      "id": "3",
+      "userId": "1",
+      "userName": "Usuario Turista",
+      "experienceId": "3",
+      "rating": 4,
+      "comment": "La expedición amazónica fue increíble, me encantó ver el impacto positivo en la comunidad local.",
+      "date": "2024-04-20"
+    }
+  ]
+}

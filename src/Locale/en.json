@@ -1,0 +1,155 @@
+{
+  "common": {
+    "appName": "EcoTrip",
+    "slogan": "Sustainable Experiences"
+  },
+  "sidevar": {
+    "logo": "EcoTrip",
+    "home": "Home",
+    "experienceManager": "Experience Manager",
+    "reservations": "Reservations",
+    "queries": "Queries",
+    "agencyProfile": "Agency Profile",
+    "touristProfile": "My Profile"
+  },
+  "home": {
+    "greeting": "Hello, {user}",
+    "greetingSubtitle": "Ready to connect with new travelers?",
+    "destination": "Destination",
+    "day": "Day",
+    "experienceType": "Experience type",
+    "budget": "Budget",
+    "search": "Search",
+    "recommendations": "Recommendations for you"
+  },
+  "touristProfile": {
+    "edit": "Edit Profile",
+    "editProfile": "Edit Tourist Profile",
+    "preferences": "Travel Preferences",
+    "sustainability": "Eco-Friendly Preference",
+    "ecoFriendlyYes": "Prefers eco-friendly experiences",
+    "ecoFriendlyNo": "No eco preference set",
+    "ecoFriendlyPreference": "I prefer eco-friendly travel experiences",
+    "contactInfo": "Contact Information",
+    "name": "Name",
+    "phone": "Phone Number",
+    "address": "Address",
+    "adventureTypes": "Preferred Adventure Types",
+    "recentBookings": "Recent Bookings",
+    "allBookings": "All Bookings",
+    "people": "{count} people",
+    "total": "Total",
+    "viewMore": "View all bookings",
+    "bookings": "My Bookings",
+    "save": "Save",
+    "cancel": "Cancel",
+    "email": "Email",
+    "noBookings": "You don't have any bookings yet",
+    "experienceName": "Experience Name",
+    "bookingDate": "Booking Date",
+    "status": "Status"
+  },
+  "experience-view":{
+    "title": "Your Published Experiences",
+    "button": "Add New"
+  },
+  "create-experience-form": {
+    "delete": "Delete",
+    "edit": "Edit",
+    "title": "Add New Experience",
+    "name": "Name",
+    "description": "Description",
+    "hour": "Duration in hours",
+    "location": "Location",
+    "price": "Price",
+    "frequencies": "Select the frequencies",
+    "schedules": "Select the schedules",
+    "include": "What does this experience include? (max. 3)",
+    "img": "Paste the image URL (e.g. https://i.imgur.com/abc.jpg)",
+    "img-button": "Add image by URL",
+    "include-button": "Add",
+    "alert": "Please complete the form correctly",
+    "save": "Save"
+  },
+  "agencyProfile": {
+    "reviews":     "Reviews",
+    "reservations":"Reservations",
+    "edit":        "Edit",
+    "editprofile": "Edit Agency Profile",
+    "viewMore":    "View more",
+    "reviewsTitle": "Reviews & Rating"
+  },
+  "experience": {
+    "cancel": "cancel",
+    "save": "save",
+    "sustainability": "Sustainability",
+    "ecoCertifications": "Eco Certifications",
+    "sustainablePractices": "Sustainable Practices",
+    "localCommunity": "Local Community Impact",
+    "difficulty": "Difficulty Level",
+    "maxGroupSize": "Maximum Group Size",
+    "languages": "Available Languages",
+    "ecoFeatures": "Eco-Friendly Features",
+    "difficultyLevels": {
+      "easy": "Easy",
+      "medium": "Moderate",
+      "hard": "Challenging"
+    }
+  },
+  "createAgency": {
+    "name":         "Name",
+    "description":  "Description",
+    "phone": "Phone",
+    "email": "Email",
+    "img":          "Profile Image URL",
+    "facebook":     "Facebook",
+    "instagram":    "Instagram",
+    "whatsapp":     "WhatsApp"
+  },
+  "reservation-view": {
+    "title": "Reservation panel",
+    "no-reserves": "No results were found for reservations",
+    "search": "Search by traveler name or experience",
+    "revenues": "Revenues"
+  },
+  "reservation-info": {
+    "date": "Reservation date",
+    "experience": "Experience",
+    "people": "People",
+    "total-paid": "Total paid"
+  },
+  "errors": {
+    "loadProfile": "Could not load profile information. Please try again later.",
+    "updateProfile": "Could not update profile. Please try again later.",
+    "genericError": "An error occurred. Please try again later.",
+    "networkError": "Network error. Please check your connection.",
+    "unauthorized": "You are not authorized to perform this action."
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "name": "Name",
+    "loginButton": "Sign In",
+    "registerButton": "Sign Up",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "createAccount": "Create account",
+    "errors": {
+      "invalidCredentials": "Invalid credentials",
+      "passwordMismatch": "Passwords don't match",
+      "emailExists": "Email already exists",
+      "required": "This field is required",
+      "invalidEmail": "Invalid email format"
+    }
+  },
+  "nav": {
+    "experiences": "Experiences",
+    "myAgency": "My Agency",
+    "myExperiences": "My Experiences",
+    "myBookings": "My Bookings",
+    "logout": "Logout"
+  }
+}

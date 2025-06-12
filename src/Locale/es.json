@@ -1,0 +1,143 @@
+{
+  "common": {
+    "appName": "EcoTrip",
+    "slogan": "Experiencias Sostenibles"
+  },
+  "sidevar": {
+    "logo": "EcoTrip",
+    "home": "Inicio",
+    "experienceManager": "Gestión de Experiencias",
+    "reservations": "Reservas",
+    "queries": "Consultas",
+    "agencyProfile": "Perfil de Agencia",
+    "touristProfile": "Mi Perfil"
+  },
+  "experience": {
+    "sustainability": "Sostenibilidad",
+    "ecoCertifications": "Certificaciones Ecológicas",
+    "sustainablePractices": "Prácticas Sostenibles",
+    "localCommunity": "Impacto en la Comunidad Local",
+    "difficulty": "Nivel de Dificultad",
+    "maxGroupSize": "Tamaño Máximo del Grupo",
+    "languages": "Idiomas Disponibles",
+    "ecoFeatures": "Características Ecológicas",
+    "difficultyLevels": {
+      "easy": "Fácil",
+      "medium": "Moderado",
+      "hard": "Desafiante"
+    }
+  },
+  "touristProfile": {
+    "edit": "Editar Perfil",
+    "editProfile": "Editar Perfil de Viajero",
+    "preferences": "Preferencias de Viaje",
+    "sustainability": "Preferencia Ecológica",
+    "ecoFriendlyYes": "Prefiere experiencias ecológicas",
+    "ecoFriendlyNo": "Sin preferencia ecológica",
+    "ecoFriendlyPreference": "Prefiero experiencias de viaje ecológicas",
+    "contactInfo": "Información de Contacto",
+    "name": "Nombre",
+    "phone": "Teléfono",
+    "address": "Dirección",
+    "adventureTypes": "Tipos de Aventura Preferidos",
+    "recentBookings": "Reservas Recientes",
+    "allBookings": "Todas las Reservas",
+    "people": "{count} personas",
+    "total": "Total",
+    "viewMore": "Ver todas las reservas",
+    "bookings": "Mis Reservas",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "email": "Correo electrónico",
+    "noBookings": "Aún no tienes reservas",
+    "experienceName": "Nombre de la Experiencia",
+    "bookingDate": "Fecha de Reserva",
+    "status": "Estado"
+  },
+  "home": {
+    "greeting": "Hola, {user}",
+    "greetingSubtitle": "¿Listo para conectar con nuevos viajeros?",
+    "destination": "Destino",
+    "day": "Día",
+    "experienceType": "Tipo de experiencia",
+    "budget": "Presupuesto",
+    "search": "Buscar",
+    "recommendations": "Recomendaciones para ti"
+  },
+  "experience-view": {
+    "title": "Tus Experiencias Publicadas",
+    "button": "Añadir Nueva"
+  },
+  "create-experience-form": {
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "title": "Añadir Nueva Experiencia",
+    "name": "Nombre",
+    "description": "Descripción",
+    "hour": "Duración en horas",
+    "location": "Lugar",
+    "price": "Precio",
+    "frequencies": "Selecciona las frecuencias",
+    "schedules": "Selecciona los horarios",
+    "include": "¿Qué incluye esta experiencia? (máx. 3)",
+    "img": "Pega la URL de la imagen (ej. https://i.imgur.com/abc.jpg)",
+    "img-button": "Agregar imagen por url",
+    "include-button": "Agregar",
+    "alert": "Complete los datos correctamente",
+    "save": "Guardar"
+  },
+  "agencyProfile": {
+    "reviews":     "Reseñas",
+    "reservations":"Reservas",
+    "edit":        "Editar",
+    "editprofile": "Editar Perfil de Agencia",
+    "viewMore":    "Ver más",
+    "reviewsTitle": "Reseñas y Puntaje"
+  },
+  "reservation-view": {
+    "title": "Panel de reservas",
+    "no-reserves": "No se encontraron resultados de reservas",
+    "search": "Buscar por nombre de viajero o experiencia",
+    "revenues": "Ingresos"
+  },
+  "reservation-info": {
+    "date": "Fecha de reserva",
+    "experience": "Experiencia",
+    "people": "Personas",
+    "total-paid": "Total Pagado"
+  },
+  "errors": {
+    "loadProfile": "No se pudo cargar la información del perfil. Por favor, intenta más tarde.",
+    "updateProfile": "No se pudo actualizar el perfil. Por favor, intenta más tarde.",
+    "genericError": "Ocurrió un error. Por favor, intenta más tarde.",
+    "networkError": "Error de red. Por favor, verifica tu conexión.",
+    "unauthorized": "No estás autorizado para realizar esta acción."
+  },
+  "auth": {
+    "login": "Iniciar sesión",
+    "register": "Registrarse",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "confirmPassword": "Confirmar contraseña",
+    "name": "Nombre",
+    "loginButton": "Entrar",
+    "registerButton": "Registrarse",
+    "noAccount": "¿No tienes cuenta?",
+    "hasAccount": "¿Ya tienes cuenta?",
+    "createAccount": "Crear cuenta",
+    "errors": {
+      "invalidCredentials": "Credenciales inválidas",
+      "passwordMismatch": "Las contraseñas no coinciden",
+      "emailExists": "El correo ya existe",
+      "required": "Este campo es obligatorio",
+      "invalidEmail": "Formato de correo inválido"
+    }
+  },
+  "nav": {
+    "experiences": "Experiencias",
+    "myAgency": "Mi Agencia",
+    "myExperiences": "Mis Experiencias",
+    "myBookings": "Mis Reservas",
+    "logout": "Cerrar sesión"
+  }
+}
