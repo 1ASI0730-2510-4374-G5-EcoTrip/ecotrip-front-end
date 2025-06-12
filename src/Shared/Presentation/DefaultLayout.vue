@@ -1,31 +1,55 @@
-<template>
-  <div class="app-container">    <header class="main-header">
-      <div class="header-left">
-        <img src="@/assets/img/logo-eco-trip.png" alt="Logo" class="logo" />
-        <h1>EcoTrip</h1>
-      </div>
-      
-      <nav class="main-nav">
-        <router-link to="/experiences" class="nav-link">
-          <i class="pi pi-home"></i> Inicio
-        </router-link>
-        <router-link to="/experiences" class="nav-link">
-          <i class="pi pi-compass"></i> Explorar experiencias
-        </router-link>
-        <router-link to="/reservations" class="nav-link">
-          <i class="pi pi-calendar"></i> Mis Reservas
-        </router-link>
-        <router-link :to="profilePath" class="nav-link">
-          <i class="pi pi-user"></i> Mi Perfil
-        </router-link>
-      </nav>
+<template>  <div class="app-container">
+    <div class="main-header">
+      <div class="header-content">
+        <div class="header-left">
+          <router-link :to="getHomeRedirect()" class="logo-link">
+            <img src="@/assets/img/logo-eco-trip.png" alt="Logo" class="logo" />
+            <span class="logo-text">EcoTrip</span>
+          </router-link>
+        </div>
+        
+        <nav v-if="isAuthenticated" class="main-nav">
+          <!-- Tourist Navigation -->
+          <template v-if="!isAgency">
+            <router-link to="/experiences" class="nav-link" active-class="router-link-active" exact>
+              <i class="pi pi-compass"></i>
+              <span>Explorar experiencias</span>
+            </router-link>
+            <router-link to="/reservations" class="nav-link" active-class="router-link-active">
+              <i class="pi pi-calendar"></i>
+              <span>Reservas</span>
+            </router-link>
+            <router-link to="/tourist/profile" class="nav-link" active-class="router-link-active">
+              <i class="pi pi-user"></i>
+              <span>Perfil</span>
+            </router-link>
+          </template>
 
-      <div class="header-right">
-        <button class="logout-btn" @click="handleLogout">
-          <i class="pi pi-sign-out"></i> Cerrar sesión
-        </button>
+          <!-- Agency Navigation -->
+          <template v-else>
+            <router-link to="/manage-experiences" class="nav-link" active-class="router-link-active">
+              <i class="pi pi-list"></i>
+              <span>Gestionar experiencias</span>
+            </router-link>
+            <router-link to="/reservations" class="nav-link" active-class="router-link-active">
+              <i class="pi pi-calendar"></i>
+              <span>Reservas</span>
+            </router-link>
+            <router-link to="/agency/profile" class="nav-link" active-class="router-link-active">
+              <i class="pi pi-user"></i>
+              <span>Perfil</span>
+            </router-link>
+          </template>
+        </nav>
+
+        <div v-if="isAuthenticated" class="header-right">
+          <button class="logout-btn" @click="handleLogout">
+            <i class="pi pi-sign-out"></i>
+            <span>Cerrar sesión</span>
+          </button>
+        </div>
       </div>
-    </header>
+    </div>
 
     <main class="main-content">
       <router-view v-if="isAuthenticated"></router-view>
@@ -53,9 +77,17 @@ const profilePath = computed(() => {
   return isAgency.value ? '/agency/profile' : '/tourist/profile';
 })
 
-const handleLogout = () => {
+const handleLogout = async () => {
   AuthSession.clear();
-  router.push('/login');
+  await router.push('/login');
+}
+
+const getHomeRedirect = () => {
+  const session = AuthSession.fromStorage();
+  if (!session?.isValid()) {
+    return '/login';
+  }
+  return session.isAgency() ? '/manage-experiences' : '/experiences';
 }
 </script>
 
@@ -64,70 +96,80 @@ const handleLogout = () => {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-}
-
-.content-layout {
-  flex: 1;
-  display: flex;
-}
-
-.main-wrapper {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
   background-color: #f8f9fa;
 }
 
 .main-header {
   background: white;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  padding: 0.75rem 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  padding: 0.75rem 1rem;
   position: sticky;
   top: 0;
   z-index: 100;
 }
 
+.header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
 .header-left {
   display: flex;
   align-items: center;
-  gap: 1rem;
+}
+
+.logo-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  color: #047e77;
 }
 
 .logo {
   height: 40px;
   width: auto;
+  object-fit: contain;
 }
 
-.header-left h1 {
+.logo-text {
   font-size: 1.5rem;
-  color: var(--primary-color);
-  margin: 0;
+  font-weight: 600;
+  color: #047e77;
 }
 
 .main-nav {
   display: flex;
   gap: 1.5rem;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .nav-link {
-  text-decoration: none;
-  color: var(--text-secondary);
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  transition: all 0.3s ease;
+  padding: 0.625rem 1rem;
+  text-decoration: none;
+  color: #475569;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  white-space: nowrap;
 }
 
-.nav-link:hover,
+.nav-link:hover {
+  background: rgba(4, 126, 119, 0.1);
+  color: #047e77;
+}
+
 .nav-link.router-link-active {
-  background: var(--primary-50);
-  color: var(--primary-color);
+  background: #047e77;
+  color: white;
 }
 
 .nav-link i {
@@ -137,14 +179,49 @@ const handleLogout = () => {
 .header-right {
   display: flex;
   align-items: center;
-  gap: 1rem;
+}
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
+  border: none;
+  background: none;
+  color: #475569;
+  cursor: pointer;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.logout-btn:hover {
+  background: #fee2e2;
+  color: #dc2626;
 }
 
 .main-content {
+  flex: 1;
   padding: 2rem;
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
-  min-height: calc(100vh - 76px);
+}
+
+@media (max-width: 768px) {
+  .header-content {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .main-nav {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .header-right {
+    width: 100%;
+    justify-content: center;
+  }
 }
 </style>

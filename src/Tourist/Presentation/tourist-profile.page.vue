@@ -16,16 +16,16 @@ const router = useRouter();
 
 const tourist = ref({
   id: "",
-  name: "",
-  email: "",
-  avatar: "",
+  name: "Usuario Turista",
+  email: "tourist@demo.com",
+  avatar: "https://i.pravatar.cc/150?u=tourist1",
   preferences: {
-    adventureTypes: [],
+    adventureTypes: ["Montaña", "Playa", "Cultural", "Aventura"],
     sustainability: true
   },
   contactInfo: {
-    phone: "",
-    address: ""
+    phone: "555-123-4567",
+    address: "Calle Turista 123, Ciudad"
   }
 });
 
@@ -58,52 +58,29 @@ onMounted(async () => {
       throw new Error(t('errors.noUserId'));
     }
 
-    const resp = await touristService.getProfile(userId);
-    if (!resp.data) {
-      throw new Error(t('errors.profileNotFound'));
-    }
-    
-    tourist.value = resp.data;
+    // Simular carga de datos del turista
+    setTimeout(() => {
+      // Los datos ya están precargados en el ref tourist
+      loading.value = false;
+    }, 500);
 
-    // Load booked experiences
-    const reservationsResp = await touristService.getBookedExperiences(userId);
-    reservations.value = reservationsResp.data || [];
   } catch (err) {
     console.error("Error loading tourist data:", err);
     error.value = err.message || t('errors.loadProfile');
-  } finally {
     loading.value = false;
   }
 });
 
 async function saveProfile() {
-  if (!tourist.value.id) return;
-  
-  loading.value = true;
-  error.value = null;
-  
   try {
-    const updated = await touristService.updateProfile(tourist.value.id, tourist.value);
-    tourist.value = updated.data;
+    loading.value = true;
+    // Simular guardado
+    await new Promise(resolve => setTimeout(resolve, 500));
     editing.value = false;
   } catch (err) {
-    console.error("Error updating profile:", err);
-    error.value = err.message || t('errors.updateProfile');
+    error.value = err.message || t('errors.saveProfile');
   } finally {
     loading.value = false;
-  }
-}
-
-async function addAdventureType(type) {
-  if (!tourist.value.preferences.adventureTypes.includes(type)) {
-    tourist.value.preferences.adventureTypes.push(type);
-  }
-}
-
-async function removeAdventureType(type) {
-  const index = tourist.value.preferences.adventureTypes.indexOf(type);
-  if (index > -1) {
-    tourist.value.preferences.adventureTypes.splice(index, 1);
   }
 }
 </script>
@@ -119,87 +96,115 @@ async function removeAdventureType(type) {
       {{ error }}
     </div>
 
-    <!-- HEADER -->
     <div class="header">
-      <h1 class="tourist-name">{{ tourist.name }}</h1>
+      <div class="profile-header">
+        <Avatar :image="tourist.avatar" size="xlarge" shape="circle" />
+        <div class="profile-info">
+          <h1 class="tourist-name">{{ tourist.name }}</h1>
+          <p class="tourist-email">{{ tourist.email }}</p>
+        </div>
+      </div>
       <button class="edit-profile-button" @click="editing = true">
+        <i class="pi pi-pencil"></i>
         {{ t('touristProfile.edit') }}
       </button>
     </div>
 
     <div class="content-grid">
       <div class="main-col">
-        <h2>{{ t('touristProfile.preferences') }}</h2>
-        <div class="adventure-types">
-          <Chip v-for="type in tourist.preferences.adventureTypes" 
-                :key="type" 
-                :label="type"
-                class="adventure-type-chip" />
-        </div>
+        <section class="preferences-section">
+          <h2>Preferencias de viaje</h2>
+          <div class="adventure-types">
+            <h3>Tipos de aventura favoritos</h3>
+            <div class="adventure-chips">
+              <Chip v-for="type in tourist.preferences.adventureTypes" 
+                    :key="type" 
+                    :label="type"
+                    class="adventure-type-chip" />
+            </div>
+          </div>
 
-        <div class="eco-preference">
-          <h3>{{ t('touristProfile.sustainability') }}</h3>
-          <p v-if="tourist.preferences.sustainability">
-            {{ t('touristProfile.ecoFriendlyYes') }}
-            <i class="pi pi-check-circle" style="color: green"></i>
-          </p>
-          <p v-else>{{ t('touristProfile.ecoFriendlyNo') }}</p>
-        </div>
+          <div class="eco-preference">
+            <h3>Preferencia de sostenibilidad</h3>
+            <div class="sustainability-status">
+              <i class="pi pi-check-circle" style="color: #047e77; font-size: 1.2rem"></i>
+              <span>Interesado en experiencias eco-amigables</span>
+            </div>
+          </div>
+        </section>
 
-        <div class="contact-info">
-          <h3>{{ t('touristProfile.contactInfo') }}</h3>
-          <p><strong>{{ t('touristProfile.email') }}:</strong> {{ tourist.email }}</p>
-          <p><strong>{{ t('touristProfile.phone') }}:</strong> {{ tourist.contactInfo.phone }}</p>
-          <p><strong>{{ t('touristProfile.address') }}:</strong> {{ tourist.contactInfo.address }}</p>
-        </div>
+        <section class="contact-section">
+          <h2>Información de contacto</h2>
+          <div class="contact-details">
+            <div class="contact-item">
+              <i class="pi pi-phone"></i>
+              <div>
+                <h4>Teléfono</h4>
+                <p>{{ tourist.contactInfo.phone }}</p>
+              </div>
+            </div>
+            <div class="contact-item">
+              <i class="pi pi-map-marker"></i>
+              <div>
+                <h4>Dirección</h4>
+                <p>{{ tourist.contactInfo.address }}</p>
+              </div>
+            </div>
+            <div class="contact-item">
+              <i class="pi pi-envelope"></i>
+              <div>
+                <h4>Email</h4>
+                <p>{{ tourist.email }}</p>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
 
-      <div class="bookings-col">
-        <h2>{{ t('touristProfile.bookings') }}</h2>
-        <div v-if="reservations.length > 0" class="bookings-list">
-          <div v-for="booking in reservations" :key="booking.id" class="booking-card">
-            <h3>{{ booking.experienceName }}</h3>
-            <p>{{ booking.date }}</p>
-            <p>{{ booking.status }}</p>
+      <div class="side-col">
+        <section class="bookings-section">
+          <h2>Mis reservas</h2>
+          <div class="empty-bookings">
+            <i class="pi pi-calendar-times"></i>
+            <p>Aún no tienes reservas</p>
+            <router-link to="/experiences" class="browse-link">
+              Explorar experiencias
+            </router-link>
           </div>
-        </div>
-        <p v-else>{{ t('touristProfile.noBookings') }}</p>
+        </section>
       </div>
     </div>
 
     <!-- Edit Profile Dialog -->
     <Dialog v-model:visible="editing" 
-            :modal="true" 
-            :header="t('touristProfile.editProfile')"
-            :closable="!loading"
-            class="edit-dialog">
+            modal 
+            :header="'Editar perfil'"
+            :style="{width: '450px'}"
+            :closable="!loading">
       <div class="edit-form">
-        <div v-if="error" class="error-message">
-          <i class="pi pi-exclamation-triangle"></i>
-          {{ error }}
+        <div class="form-field">
+          <label>Nombre</label>
+          <InputText v-model="tourist.name" class="w-full" />
+        </div>
+        
+        <div class="form-field">
+          <label>Teléfono</label>
+          <InputText v-model="tourist.contactInfo.phone" class="w-full" />
         </div>
 
         <div class="form-field">
-          <label>{{ t('touristProfile.name') }}</label>
-          <InputText v-model="tourist.name" />
+          <label>Dirección</label>
+          <Textarea v-model="tourist.contactInfo.address" rows="3" class="w-full" />
         </div>
-        <div class="form-field">
-          <label>{{ t('touristProfile.phone') }}</label>
-          <InputText v-model="tourist.contactInfo.phone" />
-        </div>
-        <div class="form-field">
-          <label>{{ t('touristProfile.address') }}</label>
-          <Textarea v-model="tourist.contactInfo.address" rows="3" />
-        </div>
-        <div class="form-actions">
-          <Button @click="saveProfile" 
-                 :label="t('touristProfile.save')" 
-                 :loading="loading"
-                 severity="primary" />
-          <Button @click="editing = false" 
-                 :label="t('touristProfile.cancel')" 
-                 :disabled="loading"
-                 severity="secondary" />
+
+        <div class="dialog-footer">
+          <Button label="Cancelar" 
+                  severity="secondary" 
+                  @click="editing = false"
+                  :disabled="loading" />
+          <Button label="Guardar" 
+                  @click="saveProfile"
+                  :loading="loading" />
         </div>
       </div>
     </Dialog>
@@ -208,12 +213,9 @@ async function removeAdventureType(type) {
 
 <style scoped>
 .tourist-profile {
-  padding: 2rem;
   max-width: 1200px;
   margin: 0 auto;
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
 }
 
 .header {
@@ -222,22 +224,43 @@ async function removeAdventureType(type) {
   align-items: center;
   margin-bottom: 2rem;
   padding-bottom: 1.5rem;
-  border-bottom: 2px solid var(--surface-border);
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 .tourist-name {
-  font-size: 2rem;
+  font-size: 1.75rem;
+  font-weight: 600;
   color: #0f172a;
   margin: 0;
 }
 
+.tourist-email {
+  color: #64748b;
+  margin: 0;
+}
+
 .edit-profile-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
   background-color: #047e77;
   color: white;
   border: none;
-  padding: 0.75rem 1.5rem;
   border-radius: 8px;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s;
 }
@@ -252,37 +275,30 @@ async function removeAdventureType(type) {
   gap: 2rem;
 }
 
-.main-col {
+.preferences-section, .contact-section, .bookings-section {
   background: white;
-  padding: 2rem;
+  padding: 1.5rem;
   border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
 }
 
-.bookings-col {
-  background: white;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.booking-card {
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 1rem;
-  margin-bottom: 1rem;
-}
-
-.booking-card h3 {
-  margin: 0 0 0.5rem;
+h2 {
+  font-size: 1.25rem;
   color: #0f172a;
+  margin: 0 0 1.5rem 0;
 }
 
-.adventure-types {
+h3 {
+  font-size: 1rem;
+  color: #334155;
+  margin: 1.5rem 0 1rem 0;
+}
+
+.adventure-chips {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  margin: 1rem 0;
 }
 
 .adventure-type-chip {
@@ -290,8 +306,63 @@ async function removeAdventureType(type) {
   color: white;
 }
 
-.edit-dialog {
-  max-width: 500px;
+.sustainability-status {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #334155;
+}
+
+.contact-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.contact-item {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.contact-item i {
+  color: #047e77;
+  font-size: 1.25rem;
+}
+
+.contact-item h4 {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.contact-item p {
+  margin: 0.25rem 0 0 0;
+  color: #0f172a;
+}
+
+.empty-bookings {
+  text-align: center;
+  padding: 2rem;
+  color: #64748b;
+}
+
+.empty-bookings i {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #cbd5e1;
+}
+
+.browse-link {
+  display: inline-block;
+  margin-top: 1rem;
+  color: #047e77;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.browse-link:hover {
+  text-decoration: underline;
 }
 
 .form-field {
@@ -305,10 +376,10 @@ async function removeAdventureType(type) {
   font-weight: 500;
 }
 
-.form-actions {
+.dialog-footer {
   display: flex;
-  gap: 1rem;
   justify-content: flex-end;
+  gap: 1rem;
   margin-top: 2rem;
 }
 
@@ -342,18 +413,23 @@ async function removeAdventureType(type) {
 }
 
 @media (max-width: 768px) {
-  .content-grid {
-    grid-template-columns: 1fr;
-  }
-  
   .tourist-profile {
     padding: 1rem;
   }
-  
+
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+
   .header {
     flex-direction: column;
-    align-items: stretch;
+    align-items: flex-start;
     gap: 1rem;
+  }
+
+  .edit-profile-button {
+    width: 100%;
+    justify-content: center;
   }
 }
 </style>

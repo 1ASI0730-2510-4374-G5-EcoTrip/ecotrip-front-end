@@ -2,7 +2,7 @@
   <div class="agency-profile">
     <div v-if="loading" class="loading-state">
       <i class="pi pi-spinner pi-spin"></i>
-      {{ t('common.loading') }}
+      Cargando...
     </div>
     
     <div v-else-if="error" class="error-state">
@@ -10,161 +10,167 @@
       {{ error }}
     </div>
     
-    <div v-else>
+    <div v-else class="profile-content">
       <div class="header">
-        <h1 class="agency-name">{{ agency.name }}</h1>
-        <button class="add-experience-button" @click="editing = true">
-          {{ t('agencyProfile.edit') }}
+        <div class="header-info">
+          <h1 class="agency-name">{{ agency.name }}</h1>
+          <span class="tax-id">RUC / NIT: {{ agency.taxId }}</span>
+        </div>
+        <button class="edit-button" @click="editing = true">
+          <i class="pi pi-pencil"></i>
+          Editar perfil
         </button>
       </div>
 
       <div class="content-grid">
         <div class="main-col">
-          <p class="tax-id"><strong>RUC / NIT:</strong> {{ agency.taxId }}</p>
-          <p class="description">{{ agency.description }}</p>
+          <section class="about-section">
+            <h2>Sobre nosotros</h2>
+            <p class="agency-description">{{ agency.description }}</p>
 
-          <div class="stats">
-            <div class="stat-item">
-              <div class="stat-number">{{ agency.rating.toFixed(1) }}</div>
-              <div class="stat-stars">
-                <StarRating :rating="agency.rating" />
+            <div class="certifications">
+              <h3>Certificaciones</h3>
+              <div class="certification-chips">
+                <Chip v-for="cert in agency.certifications" 
+                      :key="cert" 
+                      :label="cert" 
+                      class="certification-chip" />
               </div>
             </div>
+          </section>
 
-            <div class="stat-item">
-              <div class="stat-number">{{ agency.reviewCount }}</div>
-              <div class="stat-label">{{ t('agencyProfile.reviews') }}</div>
+          <section class="stats-section">
+            <div class="stat-card">
+              <span class="stat-value">{{ agency.rating }}</span>
+              <StarRating :rating="agency.rating" :showValue="false" />
+              <span class="stat-label">Calificación</span>
             </div>
-            <div class="stat-item">
-              <div class="stat-number">{{ agency.reservationCount }}</div>
-              <div class="stat-label">{{ t('agencyProfile.reservations') }}</div>
-            </div>
-          </div>
 
-          <!-- Reseñas -->
-          <div class="reviews">
-            <div
-                v-for="rev in agency.reviews.slice(0, 2)"
-                :key="rev.id"
-                class="review-item"
-            >
-              <Avatar :image="rev.avatar" shape="circle" size="large" />
-              <div class="review-content">
-                <div class="review-header">
-                  <span class="reviewer">{{ rev.name }}</span>
-                  <span class="review-date">{{ rev.date }}</span>
-                </div>
-                <StarRating :rating="rev.rating" />
-                <p class="review-text">{{ rev.comment }}</p>
-              </div>
+            <div class="stat-card">
+              <span class="stat-value">{{ agency.reviewCount }}</span>
+              <span class="stat-label">Reseñas</span>
             </div>
-            <a href="#" class="view-more" @click.prevent="showReviews = true">
-              {{ t('agencyProfile.viewMore') }} &rsaquo;
-            </a>
-          </div>
+
+            <div class="stat-card">
+              <span class="stat-value">{{ agency.reservationCount }}</span>
+              <span class="stat-label">Reservas totales</span>
+            </div>
+          </section>
         </div>
 
         <div class="side-col">
-          <img :src="agency.avatarUrl" alt="Logo Agencia" class="agency-logo" />
-          <p class="contact">{{ agency.contact.email }}</p>
-          <p class="contact">{{ agency.contact.phone }}</p>
-          <div class="social-icons">
-            <a :href="agency.socialLinks.facebook" target="_blank">
-              <i class="pi pi-facebook pi-2x"></i>
-            </a>
-            <a :href="agency.socialLinks.instagram" target="_blank">
-              <i class="pi pi-instagram pi-2x"></i>
-            </a>
-            <a :href="agency.socialLinks.whatsapp" target="_blank">
-              <i class="pi pi-whatsapp pi-2x"></i>
-            </a>
-          </div>
+          <img :src="agency.avatar" :alt="agency.name" class="agency-logo">
+          
+          <section class="contact-section">
+            <h2>Información de contacto</h2>
+            <div class="contact-info">
+              <div class="contact-item">
+                <i class="pi pi-phone"></i>
+                <div>
+                  <span class="contact-label">Teléfono</span>
+                  <span class="contact-value">{{ agency.contactInfo.phone }}</span>
+                </div>
+              </div>
+
+              <div class="contact-item">
+                <i class="pi pi-envelope"></i>
+                <div>
+                  <span class="contact-label">Email</span>
+                  <span class="contact-value">{{ agency.contactInfo.email }}</span>
+                </div>
+              </div>
+
+              <div class="contact-item">
+                <i class="pi pi-map-marker"></i>
+                <div>
+                  <span class="contact-label">Dirección</span>
+                  <span class="contact-value">{{ agency.contactInfo.address }}</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="social-section">
+            <h2>Redes sociales</h2>
+            <div class="social-links">
+              <a :href="'https://' + agency.socialLinks.facebook" 
+                 target="_blank" 
+                 class="social-link facebook">
+                <i class="pi pi-facebook"></i>
+              </a>
+              <a :href="'https://' + agency.socialLinks.instagram" 
+                 target="_blank" 
+                 class="social-link instagram">
+                <i class="pi pi-instagram"></i>
+              </a>
+              <a :href="'https://wa.me/' + agency.socialLinks.whatsapp" 
+                 target="_blank" 
+                 class="social-link whatsapp">
+                <i class="pi pi-whatsapp"></i>
+              </a>
+            </div>
+          </section>
         </div>
       </div>
     </div>
 
-    <Dialog v-model:visible="editing" modal :closable="false" :style="{ width: '600px' }">
-      <template #header>
-        <h2 class="dialog-title">{{ t('agencyProfile.editprofile') }}</h2>
-      </template>
-      <AgencyForm :agency="agency" @cancel="editing = false" @saved="onSaved" />
-    </Dialog>
-
-    <Dialog v-model:visible="showReviews" modal :style="{ width: '600px' }" :closable="true">
-      <template #header>
-        <h2 class="dialog-title">{{ t('agencyProfile.reviewsTitle') }}</h2>
-      </template>
-
-      <div v-if="agency.reviews.length" class="review-summary">
-        <div class="rating-left">
-          <span class="rating-number">{{ agency.rating.toFixed(1) }}</span>
-          <StarRating :rating="agency.rating" :showText="true" />
-        </div>
-        <div class="rating-right">
-          <span class="review-count">{{ agency.reviewCount }} {{ t('agencyProfile.reviews') }}</span>
-        </div>
-      </div>
-
-      <hr />
-
-      <div class="review-list">
-        <div v-for="rev in agency.reviews" :key="rev.id" class="review-item">
-          <Avatar :image="rev.avatar" shape="circle" size="large" />
-          <div class="review-content">
-            <div class="review-header">
-              <strong>{{ rev.name }}</strong>
-              <small>{{ rev.date }}</small>
-            </div>
-            <StarRating :rating="rev.rating" />
-            <p class="review-text">{{ rev.comment }}</p>
-          </div>
-        </div>
-      </div>
+    <Dialog v-model:visible="editing" 
+            modal 
+            :header="'Editar perfil de agencia'"
+            :style="{width: '500px'}"
+            :closable="!loading">
+      <AgencyForm :agency="agency" 
+                 @cancel="editing = false" 
+                 @saved="onSaved" />
     </Dialog>
   </div>
 </template>
 
 <script setup>
-import { ref, onBeforeMount } from "vue";
+import { ref, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
+import { useRouter } from "vue-router";
 import Avatar from "primevue/avatar";
 import Dialog from "primevue/dialog";
+import Chip from "primevue/chip";
 import StarRating from "./StarRating.vue";
 import AgencyForm from "./agency-form.component.vue";
-import { AgenciesApiService } from "@/Agency/Application/agencies-api.service.js";
-import { ReviewsApiService } from "@/Agency/Application/reviews-api.service.js";
-import { AuthSession } from "@/Auth/Domain/auth-session.aggregate.js";
-import { useRouter } from "vue-router";
+import { AuthSession } from '@/Auth/Domain/auth-session.aggregate.js';
 
-const router = useRouter();
 const { t } = useI18n();
+const router = useRouter();
 
 const agency = ref({
-  id: "",
-  name: "",
-  taxId: "",
-  description: "",
-  rating: 0,
-  reviewCount: 0,
-  reservationCount: 0,
-  avatarUrl: "",
-  contact: { email: "", phone: "" },
-  socialLinks: { facebook: "", instagram: "", whatsapp: "" },
-  reviews: [],
+  id: "2",
+  name: "Agencia EcoAventura",
+  email: "agency@demo.com",
+  avatar: "https://i.pravatar.cc/150?u=agency1",
+  description: "Ofrecemos las mejores experiencias ecológicas para viajeros responsables y conscientes con el medio ambiente.",
+  certifications: ["Turismo Sostenible", "Eco-Friendly Certificado"],
+  contactInfo: {
+    phone: "555-987-6543",
+    address: "Av. Naturaleza 456, Ciudad Eco",
+    email: "agency@demo.com"
+  },
+  socialLinks: {
+    facebook: "facebook.com/ecoaventura",
+    instagram: "instagram.com/ecoaventura_oficial",
+    whatsapp: "555-987-6543"
+  },
+  rating: 4.8,
+  reviewCount: 25,
+  reservationCount: 42,
+  taxId: "ECOTAX987"
 });
 
 const editing = ref(false);
-const showReviews = ref(false);
-const loading = ref(true);
+const loading = ref(false);
 const error = ref(null);
 
-const agencyService = new AgenciesApiService();
-const reviewService = new ReviewsApiService();
-
-onBeforeMount(async () => {
+onMounted(async () => {
   loading.value = true;
   error.value = null;
-  
+
   try {
     const session = AuthSession.fromStorage();
     if (!session?.isValid()) {
@@ -177,122 +183,95 @@ onBeforeMount(async () => {
       return;
     }
 
-    if (!session.userId) {
-      throw new Error('No valid session found');
-    }
+    // Simular carga de datos
+    setTimeout(() => {
+      // Los datos ya están precargados en el ref agency
+      loading.value = false;
+    }, 500);
 
-    const resp = await agencyService.getProfile(session.userId);
-    if (!resp.data) {
-      throw new Error('Agency profile not found');
-    }
-    
-    const data = resp.data;
-
-    const reviewsResp = await reviewService.getReviewsByAgencyId(data.id);
-    const reviews = (reviewsResp.data || []).map((review) => ({
-      ...review,
-      rating: Number(review.rating),
-    }));
-
-    const total = reviews.reduce((sum, r) => sum + r.rating, 0);
-    const average = reviews.length ? (total / reviews.length).toFixed(1) : 0;
-
-    agency.value = {
-      id: data.id,
-      name: data.name,
-      taxId: data.taxId,
-      description: data.description,
-      rating: Number(average),
-      reviewCount: reviews.length,
-      reservationCount: data.reservationCount || 0,
-      avatarUrl: data.avatarUrl,
-      contact: {
-        email: data.contactEmail,
-        phone: data.contactPhone,
-      },
-      socialLinks: {
-        facebook: data.socialLinksFacebook || '',
-        instagram: data.socialLinksInstagram || '',
-        whatsapp: data.socialLinksWhatsapp || '',
-      },
-      reviews,
-    };
   } catch (err) {
-    console.error('Error loading agency data:', err);
-    error.value = err.message || 'Error loading profile';
-  } finally {
+    console.error("Error loading agency data:", err);
+    error.value = err.message || 'Error al cargar el perfil';
     loading.value = false;
   }
 });
 
-async function onSaved(updated) {
+const onSaved = async (updatedData) => {
   try {
     loading.value = true;
-    const updatedResp = await agencyService.updateProfile(updated.id, updated);
-
-    agency.value = {
-      ...updated,
-      contact: {
-        email: updated.contactEmail,
-        phone: updated.contactPhone,
-      },
-      socialLinks: {
-        facebook: updated.socialLinksFacebook,
-        instagram: updated.socialLinksInstagram,
-        whatsapp: updated.socialLinksWhatsapp,
-      },
-      reviews: agency.value.reviews
-    };
-
+    // Simular guardado
+    await new Promise(resolve => setTimeout(resolve, 500));
+    Object.assign(agency.value, updatedData);
     editing.value = false;
   } catch (error) {
     console.error("Error saving changes:", error);
-    error.value = t('common.errorSaving');
   } finally {
     loading.value = false;
   }
-}
+};
 </script>
 
 <style scoped>
 .agency-profile {
-  max-width: 1300px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 1rem;
-  color: #0f172a;
-  font-family: 'Poppins', sans-serif;
+  padding: 2rem;
+}
+
+.loading-state,
+.error-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem;
+  text-align: center;
+  color: #64748b;
 }
 
 .header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #e5e7eb;
-  padding-bottom: 1rem;
-  margin-bottom: 1.5rem;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
 }
 
+.header-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
 
 .agency-name {
-  font-size: 1.8rem;
-  font-weight: 700;
+  font-size: 1.75rem;
+  font-weight: 600;
   color: #0f172a;
+  margin: 0;
 }
 
-.add-experience-button {
-  background-color: #318C8B;
-  color: #ffffff;
+.tax-id {
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+.edit-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #047e77;
+  color: white;
   border: none;
   border-radius: 8px;
-  padding: 12px 24px;
-  font-size: 16px;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.2s;
 }
 
-.add-experience-button:hover {
-  background-color: #bae6fd;
+.edit-button:hover {
+  background-color: #036c66;
 }
 
 .content-grid {
@@ -301,194 +280,173 @@ async function onSaved(updated) {
   gap: 2rem;
 }
 
-.tax-id {
-  margin: 0 0 0.5rem;
-  font-weight: 500;
-}
-
-.description {
-  margin: 0 0 1.5rem;
-  line-height: 1.6;
-}
-
-.stats {
-  display: flex;
-  justify-content: space-between;
-  background-color: #fef3c7;
+.about-section,
+.stats-section,
+.contact-section,
+.social-section {
+  background: white;
+  padding: 1.5rem;
   border-radius: 12px;
-  padding: 1.25rem;
-  max-width: 600px;
-  margin-bottom: 2rem;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
 }
 
-.stat-item {
-  flex: 1;
+.agency-description {
+  color: #334155;
+  line-height: 1.6;
+  margin: 0 0 1.5rem 0;
+}
+
+h2 {
+  font-size: 1.25rem;
+  color: #0f172a;
+  margin: 0 0 1.5rem 0;
+}
+
+h3 {
+  font-size: 1rem;
+  color: #334155;
+  margin: 0 0 1rem 0;
+}
+
+.certification-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.certification-chip {
+  background-color: #047e77;
+  color: white;
+}
+
+.stats-section {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.stat-card {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.4rem;
-  background-color: transparent;
+  text-align: center;
+  padding: 1rem;
+  background: #f8fafc;
+  border-radius: 8px;
 }
 
-.stat-item + .stat-item {
-  border-left: 1px solid rgba(0, 0, 0, 0.08);
-}
-.stat-number {
-  font-size: 1.4rem;
-  font-weight: bold;
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 600;
   color: #0f172a;
+  margin-bottom: 0.5rem;
 }
 
 .stat-label {
-  font-size: 0.9rem;
-  color: #334155;
+  color: #64748b;
+  font-size: 0.875rem;
 }
-.stat-stars {
+
+.agency-logo {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+}
+
+.contact-info {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  gap: 1rem;
 }
-.stat-item span,
-.stat-item {
-  background-color: transparent !important;
-  box-shadow: none !important;
+
+.contact-item {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
 }
-.stat-item span {
-  display: inline;
+
+.contact-item i {
+  color: #047e77;
+  font-size: 1.25rem;
 }
-.stat-item * {
-  background-color: transparent !important;
+
+.contact-item div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
-.reviews {
+
+.contact-label {
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.contact-value {
+  color: #0f172a;
+}
+
+.social-links {
+  display: flex;
+  gap: 1rem;
   margin-top: 1rem;
 }
 
-.review-item {
+.social-link {
   display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
-  border-bottom: 1px solid #e5e7eb;
-  padding-bottom: 1rem;
-}
-
-.review-content {
-  flex: 1;
-}
-
-.review-header {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  font-size: 0.95rem;
-}
-
-.review-date {
-  color: #64748b;
-  font-size: 0.85rem;
-}
-
-.review-text {
-  margin-top: 0.5rem;
-  line-height: 1.5;
-  color: #1e293b;
-}
-
-.view-more {
-  display: inline-block;
-  margin-top: 0.5rem;
-  color: #318C8B;
-  font-weight: 500;
-  text-decoration: none;
-}
-
-.view-more:hover {
-  text-decoration: underline;
-}
-
-.side-col {
-  text-align: center;
-  border-left: 1px solid #e5e7eb;
-  padding-left: 1.5rem;
-}
-
-.agency-logo {
-  width: 100%;
-  border-radius: 10px;
-  margin-bottom: 1rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.contact {
-  margin: 0.5rem 0;
-  line-height: 1.4;
-  color: #1e293b;
-}
-
-.social-icons a {
-  margin: 0 0.5rem;
-  color: #000;
-}
-
-.dialog-title {
-  margin: 0;
-  color: #0f172a;
-  font-size: 1.25rem;
-  font-weight: 600;
-}
-
-.review-summary {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
-  color: #000;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: white;
+  transition: opacity 0.2s;
 }
 
-.rating-left {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  color: #000;
+.social-link:hover {
+  opacity: 0.8;
 }
 
-.rating-number {
-  font-size: 2rem;
-  font-weight: bold;
+.social-link.facebook {
+  background-color: #1877f2;
 }
 
-.review-count {
-  font-size: 1rem;
-  font-weight: 500;
-  color: #475569;
+.social-link.instagram {
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
 }
 
-
-.review-list {
-  max-height: 400px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  color: #000;
-}
-.social-icons a i {
-  font-size: 1.8rem;
-  transition: color 0.2s ease;
+.social-link.whatsapp {
+  background-color: #25d366;
 }
 
-.social-icons a i:hover {
-  color: #318C8B;
-}
-.agency-logo {
-  width: 100%;
-  max-width: 300px;
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  margin: 0 auto 1rem auto;
+.social-link i {
+  font-size: 1.25rem;
 }
 
+@media (max-width: 768px) {
+  .agency-profile {
+    padding: 1rem;
+  }
 
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .header {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .edit-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .stats-section {
+    grid-template-columns: 1fr;
+  }
+}
 </style>
 

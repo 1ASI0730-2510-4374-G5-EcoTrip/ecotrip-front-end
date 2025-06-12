@@ -20,7 +20,7 @@ const routes = [
     {
         path: '/',
         name: 'Home',
-        redirect: '/login'
+        redirect: getHomeRedirect
     },
     {
         path: '/login',
@@ -107,6 +107,18 @@ const routes = [
             }
         ]
     },
+    {
+        path: '/reservations',
+        component: DefaultLayout,
+        meta: { requiresAuth: true },
+        children: [
+            {
+                path: '',
+                name: 'Reservations',
+                component: () => import('@/Reservations/Presentation/reservations-view.page.vue')
+            }
+        ]
+    },
     { 
         path: '/:catchAll(.*)', 
         redirect: '/login' 
@@ -146,28 +158,20 @@ router.beforeEach(async (to, from, next) => {
     }
 
     if (isAuthenticated) {
-        // Agency-only routes
-        if (to.meta.requiresAgency && !session.isAgency()) {
-            next('/experiences');
-            return;
-        }
-
-        // Tourist-only routes
-        if (to.meta.requiresTourist && !session.isTourist()) {
-            next('/experiences');
-            return;
-        }
-
-        // Special case: /manage-experiences is only for agencies
-        if (to.path.startsWith('/manage-experiences') && !session.isAgency()) {
-            next('/experiences');
-            return;
-        }
-
-        // Special case: /bookings is only for tourists
-        if (to.path.startsWith('/bookings') && !session.isTourist()) {
-            next('/experiences');
-            return;
+        const redirectPath = getHomeRedirect();
+        
+        if (session.isAgency()) {
+            // Tourist-only routes are not accessible to agencies
+            if (to.meta.requiresTourist || to.path === '/experiences') {
+                next(redirectPath);
+                return;
+            }
+        } else if (session.isTourist()) {
+            // Agency-only routes are not accessible to tourists
+            if (to.meta.requiresAgency || to.path.startsWith('/manage-experiences')) {
+                next(redirectPath);
+                return;
+            }
         }
     }
 
