@@ -20,7 +20,14 @@ const routes = [
     {
         path: '/',
         name: 'Home',
-        redirect: getHomeRedirect
+        beforeEnter: (to, from, next) => {
+            const session = AuthSession.fromStorage();
+            if (!session?.isValid()) {
+                next('/login');
+            } else {
+                next(session.isAgency() ? '/manage-experiences' : '/experiences');
+            }
+        }
     },
     {
         path: '/login',

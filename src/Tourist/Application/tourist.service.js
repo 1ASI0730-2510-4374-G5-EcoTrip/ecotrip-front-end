@@ -3,10 +3,10 @@ import { Tourist } from '../Domain/tourist.entity.js';
 export class TouristService {
     constructor(touristApiService) {
         this.touristApiService = touristApiService;
-    }
-
-    async getProfile(userId) {
+    }    async getProfile(userId) {
+        console.log('[TouristService] Getting profile for user:', userId);
         const response = await this.touristApiService.getProfile(userId);
+        console.log('[TouristService] Profile response:', response);
         return response.data;
     }
 

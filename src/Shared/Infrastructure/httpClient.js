@@ -13,10 +13,10 @@ const http = axios.create({
 // Request interceptor
 http.interceptors.request.use(
     config => {
-        const token = localStorage.getItem('userId'); // Usamos userId como token por ahora
-        if (token) {
+        const session = JSON.parse(localStorage.getItem('session'));
+        if (session?.id) {
             config.headers = config.headers || {};
-            config.headers.Authorization = `Bearer ${token}`;
+            config.headers.Authorization = `Bearer ${session.id}`;
         }
         return config;
     },
@@ -29,10 +29,7 @@ http.interceptors.response.use(
     error => {
         if (error.response?.status === 401) {
             // Limpiar datos de sesión
-            localStorage.removeItem('token');
-            localStorage.removeItem('role');
-            localStorage.removeItem('userId');
-            localStorage.removeItem('userName');
+            localStorage.clear(); // Limpiar toda la sesión
             
             // Redirigir al login preservando la URL actual
             const currentPath = window.location.pathname;

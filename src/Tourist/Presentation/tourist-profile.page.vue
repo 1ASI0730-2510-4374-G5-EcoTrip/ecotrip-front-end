@@ -8,34 +8,35 @@ import InputText from "primevue/inputtext";
 import Textarea from "primevue/textarea";
 import Chip from "primevue/chip";
 import Button from "primevue/button";
+import { Tourist } from "@/Tourist/Domain/tourist.entity.js";
 import { TouristApiService } from "@/Tourist/Application/tourist-api.service.js";
+import { TouristService } from "@/Tourist/Application/tourist.service.js";
 import { AuthSession } from '@/Auth/Domain/auth-session.aggregate';
 
 const { t } = useI18n();
 const router = useRouter();
+const touristApiService = new TouristApiService();
+const touristService = new TouristService(touristApiService);
 
-const tourist = ref({
+const tourist = ref(new Tourist({
   id: "",
-  name: "Usuario Turista",
-  email: "tourist@demo.com",
-  avatar: "https://i.pravatar.cc/150?u=tourist1",
+  name: "",
+  email: "",
+  avatar: "",
   preferences: {
-    adventureTypes: ["Montaña", "Playa", "Cultural", "Aventura"],
-    sustainability: true
+    adventureTypes: [],
+    sustainability: false
   },
   contactInfo: {
-    phone: "555-123-4567",
-    address: "Calle Turista 123, Ciudad"
+    phone: "",
+    address: ""
   }
-});
+}));
 
 const editing = ref(false);
-const showBookings = ref(false);
 const reservations = ref([]);
 const loading = ref(false);
 const error = ref(null);
-
-const touristService = new TouristApiService();
 
 onMounted(async () => {
   loading.value = true;
@@ -55,18 +56,42 @@ onMounted(async () => {
 
     const userId = session.userId;
     if (!userId) {
-      throw new Error(t('errors.noUserId'));
+      throw new Error('No se pudo identificar al usuario');
+    }    console.log('[TouristProfilePage] Getting data for user:', userId);
+    
+    // Load profile and reservations in parallel
+    const [profileData, bookingsData] = await Promise.all([
+      touristService.getProfile(userId),
+      touristService.getBookedExperiences(userId)
+    ]);
+
+    console.log('[TouristProfilePage] Profile data received:', profileData);
+    console.log('[TouristProfilePage] Bookings data received:', bookingsData);
+
+    if (!profileData) {
+      throw new Error('No se pudo cargar el perfil del usuario');
     }
 
-    // Simular carga de datos del turista
-    setTimeout(() => {
-      // Los datos ya están precargados en el ref tourist
-      loading.value = false;
-    }, 500);
+    tourist.value = {
+      ...tourist.value,  // Mantener la estructura existente
+      ...profileData,    // Sobrescribir con los nuevos datos
+      preferences: {
+        adventureTypes: profileData.preferences?.adventureTypes || [],
+        sustainability: Boolean(profileData.preferences?.sustainability)
+      },
+      contactInfo: {
+        phone: profileData.contactInfo?.phone || '',
+        address: profileData.contactInfo?.address || ''
+      }
+    };
+    
+    console.log('[TouristProfilePage] Updated tourist data:', tourist.value);
+    reservations.value = bookingsData || [];
 
   } catch (err) {
     console.error("Error loading tourist data:", err);
-    error.value = err.message || t('errors.loadProfile');
+    error.value = err.message || 'Error al cargar el perfil';
+  } finally {
     loading.value = false;
   }
 });
@@ -74,11 +99,18 @@ onMounted(async () => {
 async function saveProfile() {
   try {
     loading.value = true;
-    // Simular guardado
-    await new Promise(resolve => setTimeout(resolve, 500));
+    error.value = null;
+
+    const session = AuthSession.fromStorage();
+    if (!session?.userId) {
+      throw new Error('No se pudo identificar al usuario');
+    }
+
+    await touristService.updateProfile(tourist.value);
     editing.value = false;
   } catch (err) {
-    error.value = err.message || t('errors.saveProfile');
+    console.error("Error updating profile:", err);
+    error.value = err.message || 'Error al guardar los cambios';
   } finally {
     loading.value = false;
   }
@@ -96,92 +128,119 @@ async function saveProfile() {
       {{ error }}
     </div>
 
-    <div class="header">
-      <div class="profile-header">
-        <Avatar :image="tourist.avatar" size="xlarge" shape="circle" />
-        <div class="profile-info">
-          <h1 class="tourist-name">{{ tourist.name }}</h1>
-          <p class="tourist-email">{{ tourist.email }}</p>
+    <div v-else>
+      <!-- Header -->
+      <div class="header">
+        <div class="profile-header">
+          <Avatar :image="tourist.avatar" size="xlarge" shape="circle" />
+          <div class="profile-info">
+            <h1 class="tourist-name">{{ tourist.name }}</h1>
+            <p class="tourist-email">{{ tourist.email }}</p>
+          </div>
+        </div>
+        <button class="edit-profile-button" @click="editing = true">
+          <i class="pi pi-pencil"></i>
+          <span>Editar perfil</span>
+        </button>
+      </div>
+
+      <div class="content-grid">
+        <div class="main-col">
+          <!-- Preferencias -->
+          <section class="preferences-section">
+            <h2>Preferencias de viaje</h2>
+            
+            <div class="adventure-types">
+              <h3>Tipos de aventura preferidos</h3>
+              <div class="adventure-chips">
+                <Chip v-for="type in tourist.preferences.adventureTypes" 
+                      :key="type" 
+                      :label="type"
+                      class="adventure-type-chip" />
+              </div>
+            </div>
+
+            <div class="eco-preference">
+              <h3>Preferencia de sostenibilidad</h3>
+              <div class="sustainability-status">
+                <i :class="['pi', tourist.preferences.sustainability ? 'pi-check-circle' : 'pi-times-circle']"
+                   :style="{ color: tourist.preferences.sustainability ? '#047e77' : '#dc2626' }"></i>
+                <span>{{ tourist.preferences.sustainability ? 'Interesado en experiencias eco-amigables' : 'Sin preferencias eco-amigables' }}</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- Información de contacto -->
+          <section class="contact-section">
+            <h2>Información de contacto</h2>
+            <div class="contact-details">
+              <div class="contact-item">
+                <i class="pi pi-phone"></i>
+                <div>
+                  <h4>Teléfono</h4>
+                  <p>{{ tourist.contactInfo.phone || 'No especificado' }}</p>
+                </div>
+              </div>
+              <div class="contact-item">
+                <i class="pi pi-map-marker"></i>
+                <div>
+                  <h4>Dirección</h4>
+                  <p>{{ tourist.contactInfo.address || 'No especificada' }}</p>
+                </div>
+              </div>
+              <div class="contact-item">
+                <i class="pi pi-envelope"></i>
+                <div>
+                  <h4>Email</h4>
+                  <p>{{ tourist.email }}</p>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- Reservas -->
+        <div class="side-col">
+          <section class="bookings-section">
+            <h2>Mis reservas</h2>
+            <div v-if="reservations.length > 0" class="bookings-list">
+              <div v-for="booking in reservations" :key="booking.id" class="booking-card">
+                <div class="booking-header">
+                  <h3>{{ booking.experienceName }}</h3>
+                  <span :class="['status-badge', booking.status.toLowerCase()]">
+                    {{ booking.status }}
+                  </span>
+                </div>
+                <p class="booking-date">
+                  <i class="pi pi-calendar"></i>
+                  {{ new Date(booking.date).toLocaleDateString() }}
+                </p>
+              </div>
+            </div>
+            <div v-else class="empty-bookings">
+              <i class="pi pi-calendar-times"></i>
+              <p>Aún no tienes reservas</p>
+              <router-link to="/experiences" class="browse-link">
+                Explorar experiencias
+              </router-link>
+            </div>
+          </section>
         </div>
       </div>
-      <button class="edit-profile-button" @click="editing = true">
-        <i class="pi pi-pencil"></i>
-        {{ t('touristProfile.edit') }}
-      </button>
     </div>
 
-    <div class="content-grid">
-      <div class="main-col">
-        <section class="preferences-section">
-          <h2>Preferencias de viaje</h2>
-          <div class="adventure-types">
-            <h3>Tipos de aventura favoritos</h3>
-            <div class="adventure-chips">
-              <Chip v-for="type in tourist.preferences.adventureTypes" 
-                    :key="type" 
-                    :label="type"
-                    class="adventure-type-chip" />
-            </div>
-          </div>
-
-          <div class="eco-preference">
-            <h3>Preferencia de sostenibilidad</h3>
-            <div class="sustainability-status">
-              <i class="pi pi-check-circle" style="color: #047e77; font-size: 1.2rem"></i>
-              <span>Interesado en experiencias eco-amigables</span>
-            </div>
-          </div>
-        </section>
-
-        <section class="contact-section">
-          <h2>Información de contacto</h2>
-          <div class="contact-details">
-            <div class="contact-item">
-              <i class="pi pi-phone"></i>
-              <div>
-                <h4>Teléfono</h4>
-                <p>{{ tourist.contactInfo.phone }}</p>
-              </div>
-            </div>
-            <div class="contact-item">
-              <i class="pi pi-map-marker"></i>
-              <div>
-                <h4>Dirección</h4>
-                <p>{{ tourist.contactInfo.address }}</p>
-              </div>
-            </div>
-            <div class="contact-item">
-              <i class="pi pi-envelope"></i>
-              <div>
-                <h4>Email</h4>
-                <p>{{ tourist.email }}</p>
-              </div>
-            </div>
-          </div>
-        </section>
-      </div>
-
-      <div class="side-col">
-        <section class="bookings-section">
-          <h2>Mis reservas</h2>
-          <div class="empty-bookings">
-            <i class="pi pi-calendar-times"></i>
-            <p>Aún no tienes reservas</p>
-            <router-link to="/experiences" class="browse-link">
-              Explorar experiencias
-            </router-link>
-          </div>
-        </section>
-      </div>
-    </div>
-
-    <!-- Edit Profile Dialog -->
+    <!-- Modal de edición -->
     <Dialog v-model:visible="editing" 
             modal 
             :header="'Editar perfil'"
             :style="{width: '450px'}"
             :closable="!loading">
       <div class="edit-form">
+        <div v-if="error" class="error-message">
+          <i class="pi pi-exclamation-triangle"></i>
+          {{ error }}
+        </div>
+
         <div class="form-field">
           <label>Nombre</label>
           <InputText v-model="tourist.name" class="w-full" />
@@ -216,6 +275,31 @@ async function saveProfile() {
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.error-message {
+  background-color: #fef2f2;
+  border: 1px solid #fee2e2;
+  border-radius: 8px;
+  color: #991b1b;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .header {
@@ -341,6 +425,62 @@ h3 {
   color: #0f172a;
 }
 
+.bookings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.booking-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.booking-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+}
+
+.booking-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: #0f172a;
+}
+
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.status-badge.pending {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.status-badge.confirmed {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.status-badge.cancelled {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.booking-date {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
 .empty-bookings {
   text-align: center;
   padding: 2rem;
@@ -383,35 +523,6 @@ h3 {
   margin-top: 2rem;
 }
 
-.loading-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(255, 255, 255, 0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.error-message {
-  background-color: #fef2f2;
-  border: 1px solid #fee2e2;
-  border-radius: 8px;
-  color: #991b1b;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.error-message i {
-  font-size: 1.2rem;
-}
-
 @media (max-width: 768px) {
   .tourist-profile {
     padding: 1rem;
@@ -425,6 +536,10 @@ h3 {
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
+  }
+
+  .profile-header {
+    width: 100%;
   }
 
   .edit-profile-button {

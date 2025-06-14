@@ -14,12 +14,14 @@ export class AuthSession {
     static fromStorage() {
         const stored = localStorage.getItem(AuthSession.STORAGE_KEY);
         if (!stored) {
-            console.log('No hay sesión almacenada');
+            console.log('[AuthSession] No hay sesión almacenada');
+            localStorage.clear();
             return null;
         }
 
         try {
             const data = JSON.parse(stored);
+            console.log('[AuthSession] Datos de sesión encontrados:', data);
             const session = new AuthSession(
                 data.id,
                 data.email,
