@@ -7,20 +7,42 @@ export class TouristApiService {
     async getProfile(touristId) {
         try {
             console.log('[TouristApiService] Getting profile for user:', touristId);
-            if (!touristId) throw new Error('Tourist ID is required');
+            if (!touristId) {
+                console.error('[TouristApiService] Tourist ID is missing');
+                throw new Error('Se requiere ID de turista');
+            }
             
-            const response = await http.get(`${BASE_URL}/users/${touristId}`);
+            console.log('[TouristApiService] Making request to:', `/users/${touristId}`);
+            const response = await http.get(`/users/${touristId}`);
             console.log('[TouristApiService] Raw API response:', response.data);
+            
+            if (!response.data) {
+                console.error('[TouristApiService] Empty response from server');
+                throw new Error('No se recibieron datos del servidor');
+            }
+            
+            if (!response.data.id || !response.data.role || response.data.role !== 'tourist') {
+                console.error('[TouristApiService] Invalid user data:', response.data);
+                throw new Error('Los datos del usuario no son válidos');
+            }
             
             const mappedData = TouristAssembler.toEntityFromResource(response.data);
             console.log('[TouristApiService] Mapped tourist data:', mappedData);
+            
+            if (!mappedData) {
+                console.error('[TouristApiService] Failed to map data');
+                throw new Error('Error al procesar los datos del usuario');
+            }
             
             return {
                 data: mappedData
             };
         } catch (error) {
             console.error('[TouristApiService] Error fetching profile:', error);
-            throw this.handleError(error);
+            if (error.response?.status === 404) {
+                throw new Error('Usuario no encontrado');
+            }
+            throw new Error('Error al cargar el perfil: ' + (error.message || 'Error desconocido'));
         }
     }
 

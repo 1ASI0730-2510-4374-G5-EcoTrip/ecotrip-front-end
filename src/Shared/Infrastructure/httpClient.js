@@ -13,10 +13,12 @@ const http = axios.create({
 // Request interceptor
 http.interceptors.request.use(
     config => {
+        console.log(`[HttpClient] Making ${config.method.toUpperCase()} request to: ${config.url}`);
         const session = JSON.parse(localStorage.getItem('session'));
         if (session?.id) {
             config.headers = config.headers || {};
             config.headers.Authorization = `Bearer ${session.id}`;
+            console.log('[HttpClient] Added authorization header');
         }
         return config;
     },

@@ -3,6 +3,7 @@ export class AuthSession {
 
     constructor(id, email, name, role, avatar) {
         this.id = id;
+        this.userId = id; // Asegurarse de que userId esté disponible
         this.email = email;
         this.name = name;
         this.role = role;

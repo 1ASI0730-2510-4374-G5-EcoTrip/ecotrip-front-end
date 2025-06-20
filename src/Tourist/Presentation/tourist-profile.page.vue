@@ -44,9 +44,17 @@ onMounted(async () => {
 
   try {
     const session = AuthSession.fromStorage();
+    console.log('[TouristProfile] Session:', session);
+    
     if (!session?.isValid()) {
+      console.log('[TouristProfile] Invalid session, redirecting to login');
       await router.push('/login');
       return;
+    }
+
+    if (!session.id) {
+      console.error('[TouristProfile] No user ID in session');
+      throw new Error('No se pudo identificar al usuario - ID no encontrado en la sesión');
     }
 
     if (!session.isTourist()) {
