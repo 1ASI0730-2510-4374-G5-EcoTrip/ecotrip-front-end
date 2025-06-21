@@ -4,16 +4,20 @@ import { AuthSession } from '@/Auth/Domain/auth-session.aggregate.js';
 
 // Clean invalid sessions on router initialization
 const existingSession = AuthSession.fromStorage();
-if (existingSession && !existingSession.isValid()) {
+if (!existingSession || !existingSession.isValid()) {
+    console.log('[Router] No valid session found, clearing session data');
     AuthSession.clear();
 }
 
 const getHomeRedirect = () => {
     const session = AuthSession.fromStorage();
     if (!session?.isValid()) {
+        console.log('[Router] Invalid session, redirecting to login');
         return '/login';
     }
-    return session.isAgency() ? '/manage-experiences' : '/experiences';
+    const redirect = session.isAgency() ? '/manage-experiences' : '/experiences';
+    console.log('[Router] Valid session, redirecting to:', redirect);
+    return redirect;
 };
 
 const routes = [
@@ -162,11 +166,25 @@ router.beforeEach(async (to, from, next) => {
     if (to.meta.requiresAuth && !isAuthenticated) {
         next('/login');
         return;
+    }    // Si no hay sesión y la ruta no es login o register, redirigir al login
+    if (!isAuthenticated && !to.meta.requiresGuest) {
+        console.log('[Router] No authentication found, redirecting to login');
+        next({
+            path: '/login',
+            query: { redirect: to.fullPath }
+        });
+        return;
     }
 
     if (isAuthenticated) {
         const redirectPath = getHomeRedirect();
         
+        // Si estamos en la raíz, redirigir según el tipo de usuario
+        if (to.path === '/') {
+            next(redirectPath);
+            return;
+        }
+
         if (session.isAgency()) {
             // Tourist-only routes are not accessible to agencies
             if (to.meta.requiresTourist || to.path === '/experiences') {

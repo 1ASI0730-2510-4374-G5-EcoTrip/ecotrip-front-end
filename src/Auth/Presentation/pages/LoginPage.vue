@@ -137,12 +137,13 @@ async function onLogin() {
 
     if (!session || !session.role) {
       throw new Error('No se recibió una sesión válida');
-    }
-
-    // Redirigir según el rol
-    const redirectPath = session.role === 'agency' ? '/manage-experiences' : '/experiences';
+    }    // Obtener la URL de redirección de los query params o usar la predeterminada según el rol
+    const redirectTo = router.currentRoute.value.query.redirect;
+    const defaultPath = session.role === 'agency' ? '/manage-experiences' : '/experiences';
+    const redirectPath = redirectTo || defaultPath;
+    
     console.log('LoginPage: Redirigiendo a', redirectPath);
-    await router.push(redirectPath);
+    await router.replace(redirectPath);
 
   } catch (err) {
     console.error('Error en login:', err);
