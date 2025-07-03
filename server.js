@@ -38,9 +38,22 @@ server.use((req, res, next) => {
     next();
 });
 
-// Middleware de autenticación
+// Servir archivos estáticos del frontend en producción PRIMERO
+if (process.env.NODE_ENV === 'production' || process.env.PORT) {
+    console.log('Configurando archivos estáticos para producción');
+    server.use(express.static(path.join(__dirname, 'dist')));
+}
+
+// Middleware de autenticación solo para rutas de API
 const authMiddleware = async (req, res, next) => {
-    if (req.path === '/auth/login' || req.path === '/users' || req.method === 'OPTIONS') {
+    // Permitir acceso a archivos estáticos y rutas específicas
+    if (req.path === '/auth/login' || 
+        req.path === '/users' || 
+        req.method === 'OPTIONS' ||
+        req.path.includes('.') || // archivos estáticos (css, js, etc)
+        req.path === '/' ||       // página principal
+        req.path.startsWith('/experiences') ||
+        req.path.startsWith('/reservations')) {
         return next();
     }
 
@@ -115,21 +128,22 @@ server.use((err, req, res, next) => {
     res.status(500).json({ error: 'Error interno del servidor' });
 });
 
-// Servir archivos estáticos del frontend en producción
+// Usar el router de json-server para las rutas de API
+server.use(router);
+
+// Manejar todas las rutas SPA que no son API (debe ir al final)
 if (process.env.NODE_ENV === 'production' || process.env.PORT) {
-    server.use(express.static(path.join(__dirname, 'dist')));
-    
-    // Manejar todas las rutas SPA que no son API
     server.get('*', (req, res) => {
-        if (!req.path.startsWith('/')) {
-            return res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+        // Solo redirigir si no es una ruta de API
+        if (!req.path.startsWith('/users') && 
+            !req.path.startsWith('/experiences') && 
+            !req.path.startsWith('/reservations') && 
+            !req.path.startsWith('/reviews') &&
+            !req.path.startsWith('/auth')) {
+            res.sendFile(path.join(__dirname, 'dist', 'index.html'));
         }
-        res.sendFile(path.join(__dirname, 'dist', 'index.html'));
     });
 }
-
-// Usar el router de json-server para las rutas restantes
-server.use(router);
 
 // Iniciar el servidor
 server.listen(port, '0.0.0.0', () => {
