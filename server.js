@@ -48,22 +48,35 @@ if (process.env.NODE_ENV === 'production' || process.env.PORT) {
 server.get('/api/users', (req, res, next) => {
     const { email, password, role } = req.query;
     
+    console.log('GET /api/users - Query params:', req.query);
+    
     // Si tiene parámetros de login, tratar como autenticación
     if (email && password && role) {
         console.log('Recibida solicitud de login GET en /api/users:', { email, password: '***', role });
         
         try {
             const users = router.db.get('users').value();
+            console.log('Total de usuarios en BD:', users.length);
+            console.log('Usuarios disponibles:', users.map(u => ({ email: u.email, role: u.role })));
             console.log('Buscando usuario con email:', email, 'y role:', role);
             
             const user = users.find(u => u.email === email && u.password === password && u.role === role);
             if (user) {
                 // No enviar la contraseña en la respuesta
-                const { password, ...userWithoutPassword } = user;
+                const { password: pwd, ...userWithoutPassword } = user;
                 console.log('Usuario encontrado:', userWithoutPassword);
                 return res.json(userWithoutPassword);
             } else {
-                console.log('Usuario no encontrado');
+                console.log('Usuario no encontrado - verificando cada campo:');
+                const userByEmail = users.find(u => u.email === email);
+                if (!userByEmail) {
+                    console.log('- Email no encontrado:', email);
+                } else {
+                    console.log('- Email encontrado, verificando password y role');
+                    console.log('- Password match:', userByEmail.password === password);
+                    console.log('- Role match:', userByEmail.role === role);
+                    console.log('- Usuario completo:', userByEmail);
+                }
                 return res.status(401).json({ error: 'Credenciales incorrectas' });
             }
         } catch (error) {
@@ -78,27 +91,39 @@ server.get('/api/users', (req, res, next) => {
 
 // Ruta de login POST - CON PREFIJO /api
 server.post('/api/auth/login', (req, res) => {
+    console.log('POST /api/auth/login - Body:', req.body);
     console.log('Recibida solicitud de login POST en /api/auth/login:', req.body);
     
     const { email, password, role } = req.body;
     
     if (!email || !password || !role) {
-        console.log('Datos de login incompletos');
+        console.log('Datos de login incompletos - email:', !!email, 'password:', !!password, 'role:', !!role);
         return res.status(400).json({ error: 'Todos los campos son requeridos' });
     }
     
     try {
         const users = router.db.get('users').value();
+        console.log('Total de usuarios en BD:', users.length);
+        console.log('Usuarios disponibles:', users.map(u => ({ email: u.email, role: u.role })));
         console.log('Buscando usuario con email:', email, 'y role:', role);
         
         const user = users.find(u => u.email === email && u.password === password && u.role === role);
         if (user) {
             // No enviar la contraseña en la respuesta
-            const { password, ...userWithoutPassword } = user;
+            const { password: pwd, ...userWithoutPassword } = user;
             console.log('Usuario encontrado:', userWithoutPassword);
             res.json(userWithoutPassword);
         } else {
-            console.log('Usuario no encontrado');
+            console.log('Usuario no encontrado - verificando cada campo:');
+            const userByEmail = users.find(u => u.email === email);
+            if (!userByEmail) {
+                console.log('- Email no encontrado:', email);
+            } else {
+                console.log('- Email encontrado, verificando password y role');
+                console.log('- Password match:', userByEmail.password === password);
+                console.log('- Role match:', userByEmail.role === role);
+                console.log('- Usuario completo:', userByEmail);
+            }
             res.status(401).json({ error: 'Credenciales incorrectas' });
         }
     } catch (error) {
