@@ -1,8 +1,6 @@
 import http from '@/Shared/Infrastructure/httpClient.js';
 import { TouristAssembler } from './tourist.assembler.js';
 
-const BASE_URL = 'http://localhost:3003';
-
 export class TouristApiService {
     async getProfile(touristId) {
         try {
@@ -51,7 +49,7 @@ export class TouristApiService {
             if (!touristId) throw new Error('ID de turista es requerido');
             const payload = TouristAssembler.toRequestPayload(data);
             console.log('[TouristApiService] Updating profile with payload:', payload);
-            const response = await http.put(`${BASE_URL}/users/${touristId}`, payload);
+            const response = await http.put(`/users/${touristId}`, payload);
             return {
                 data: TouristAssembler.toEntityFromResource(response.data)
             };
@@ -64,7 +62,7 @@ export class TouristApiService {
     async getBookedExperiences(touristId) {
         try {
             if (!touristId) throw new Error('Tourist ID is required');
-            const response = await http.get(`${BASE_URL}/reservations?userId=${touristId}`);
+            const response = await http.get(`/reservations?userId=${touristId}`);
             return {
                 data: response.data.map(booking => ({
                     id: booking.id,
