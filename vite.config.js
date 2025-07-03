@@ -6,6 +6,10 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vite.dev/config/
 export default defineConfig({
+  // ¡Añade o modifica esta línea!
+  // Usar './' hace que las rutas de los assets sean relativas al directorio del index.html
+  base: './', 
+
   plugins: [
     vue(),
     vueDevTools(),

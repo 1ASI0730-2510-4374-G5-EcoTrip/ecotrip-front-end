@@ -91,7 +91,7 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { ExperienceService } from '../Application/experience.service';
+import { ExperienceService } from '../../Application/experience.service';
 import { AuthSession } from '@/Auth/Domain/auth-session.aggregate';
 
 const route = useRoute();

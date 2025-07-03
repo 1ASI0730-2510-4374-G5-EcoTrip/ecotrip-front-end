@@ -104,7 +104,7 @@ import { ref, onMounted, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import InputText from 'primevue/inputtext';
 import InputNumber from 'primevue/inputnumber';
-import { ExperienceService } from '../Application/experience.service';
+import { ExperienceService } from '../../Application/experience.service';
 import { AuthSession } from '@/Auth/Domain/auth-session.aggregate';
 
 const route = useRoute();
