@@ -29,7 +29,7 @@ server.use(jsonServer.bodyParser);
 
 // Middleware para simular latencia de red
 server.use((req, res, next) => {
-    setTimeout(next, 500);
+    setTimeout(next, 100);
 });
 
 // Log all requests
@@ -44,37 +44,41 @@ if (process.env.NODE_ENV === 'production' || process.env.PORT) {
     server.use(express.static(path.join(__dirname, 'dist')));
 }
 
-// Middleware de autenticación solo para rutas de API
-const authMiddleware = async (req, res, next) => {
-    // Permitir acceso a archivos estáticos y rutas específicas
-    if (req.path === '/auth/login' || 
-        req.path === '/users' || 
-        req.method === 'OPTIONS' ||
-        req.path.includes('.') || // archivos estáticos (css, js, etc)
-        req.path === '/' ||       // página principal
-        req.path.startsWith('/experiences') ||
-        req.path.startsWith('/reservations')) {
-        return next();
+// Ruta de login GET (para compatibilidad con frontend)
+server.get('/users', (req, res, next) => {
+    const { email, password, role } = req.query;
+    
+    // Si tiene parámetros de login, tratar como autenticación
+    if (email && password && role) {
+        console.log('Recibida solicitud de login GET:', { email, password: '***', role });
+        
+        try {
+            const users = router.db.get('users').value();
+            console.log('Buscando usuario con email:', email, 'y role:', role);
+            
+            const user = users.find(u => u.email === email && u.password === password && u.role === role);
+            if (user) {
+                // No enviar la contraseña en la respuesta
+                const { password, ...userWithoutPassword } = user;
+                console.log('Usuario encontrado:', userWithoutPassword);
+                return res.json(userWithoutPassword);
+            } else {
+                console.log('Usuario no encontrado');
+                return res.status(401).json({ error: 'Credenciales incorrectas' });
+            }
+        } catch (error) {
+            console.error('Error al procesar login:', error);
+            return res.status(500).json({ error: 'Error interno del servidor' });
+        }
     }
+    
+    // Si no es login, continuar con el comportamiento normal de json-server
+    next();
+});
 
-    const authHeader = req.headers.authorization;
-    if (!authHeader) {
-        return res.status(401).json({ error: 'No autorizado' });
-    }
-
-    try {
-        // Aquí puedes implementar la verificación del token si lo necesitas
-        next();
-    } catch (error) {
-        res.status(401).json({ error: 'Token inválido' });
-    }
-};
-
-server.use(authMiddleware);
-
-// Ruta de login
+// Ruta de login POST
 server.post('/auth/login', (req, res) => {
-    console.log('Recibida solicitud de login:', req.body);
+    console.log('Recibida solicitud de login POST:', req.body);
     
     const { email, password, role } = req.body;
     
@@ -101,31 +105,6 @@ server.post('/auth/login', (req, res) => {
         console.error('Error al procesar login:', error);
         res.status(500).json({ error: 'Error interno del servidor' });
     }
-});
-
-// Middleware para validar datos de registro
-server.use('/users', (req, res, next) => {
-    if (req.method === 'POST') {
-        const { email, password, role } = req.body;
-        
-        if (!email || !password || !role) {
-            return res.status(400).json({ error: 'Datos incompletos' });
-        }
-        
-        const users = router.db.get('users').value();
-        const exists = users.some(u => u.email === email);
-        
-        if (exists) {
-            return res.status(400).json({ error: 'El email ya está registrado' });
-        }
-    }
-    next();
-});
-
-// Middleware de error global
-server.use((err, req, res, next) => {
-    console.error('Error:', err);
-    res.status(500).json({ error: 'Error interno del servidor' });
 });
 
 // Usar el router de json-server para las rutas de API
