@@ -72,7 +72,8 @@ server.get('/api/users', (req, res, next) => {
                 // No enviar la contraseña en la respuesta
                 const { password: pwd, ...userWithoutPassword } = user;
                 console.log('Usuario encontrado:', userWithoutPassword);
-                return res.json(userWithoutPassword);
+                // Devolver como array para compatibilidad con json-server
+                return res.json([userWithoutPassword]);
             } else {
                 console.log('Usuario no encontrado - verificando cada campo:');
                 const userByEmail = users.find(u => u.email === email);
@@ -126,7 +127,8 @@ server.post('/api/auth/login', (req, res) => {
             // No enviar la contraseña en la respuesta
             const { password: pwd, ...userWithoutPassword } = user;
             console.log('Usuario encontrado:', userWithoutPassword);
-            res.json(userWithoutPassword);
+            // Devolver como array para compatibilidad con json-server
+            res.json([userWithoutPassword]);
         } else {
             console.log('Usuario no encontrado - verificando cada campo:');
             const userByEmail = users.find(u => u.email === email);
