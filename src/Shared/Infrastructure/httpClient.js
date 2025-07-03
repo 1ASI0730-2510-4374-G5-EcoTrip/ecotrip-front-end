@@ -1,6 +1,9 @@
 import axios from 'axios';
 
-const API_BASE = 'http://localhost:3003';
+// Configurar la URL base dependiendo del entorno
+const API_BASE = import.meta.env.PROD 
+    ? '/api'  // En producción usa rutas relativas
+    : 'http://localhost:3003';  // En desarrollo usa localhost
 
 const http = axios.create({
     baseURL: API_BASE,

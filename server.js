@@ -1,8 +1,19 @@
-import jsonServer from 'json-server';
+import { createRequire } from 'module';
+import express from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const require = createRequire(import.meta.url);
+const jsonServer = require('json-server');
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 const server = jsonServer.create();
 const router = jsonServer.router('db.json');
 const middlewares = jsonServer.defaults();
-const port = 3003;
+
+// Puerto desde variable de entorno (Render) o 3003 por defecto
+const port = process.env.PORT || 3003;
 
 // Configurar CORS y otros middlewares por defecto
 server.use(middlewares);
@@ -104,10 +115,29 @@ server.use((err, req, res, next) => {
     res.status(500).json({ error: 'Error interno del servidor' });
 });
 
+// Servir archivos estáticos del frontend en producción
+if (process.env.NODE_ENV === 'production' || process.env.PORT) {
+    server.use(express.static(path.join(__dirname, 'dist')));
+    
+    // Manejar todas las rutas SPA que no son API
+    server.get('*', (req, res) => {
+        if (!req.path.startsWith('/')) {
+            return res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+        }
+        res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+    });
+}
+
 // Usar el router de json-server para las rutas restantes
 server.use(router);
 
 // Iniciar el servidor
-server.listen(port, () => {
-    console.log(`JSON Server está corriendo en http://localhost:${port}`);
+server.listen(port, '0.0.0.0', () => {
+    console.log(`Server running on port ${port}`);
+    if (process.env.NODE_ENV === 'production' || process.env.PORT) {
+        console.log(`Frontend: http://localhost:${port}`);
+        console.log(`API: http://localhost:${port}/`);
+    } else {
+        console.log(`JSON Server está corriendo en http://localhost:${port}`);
+    }
 });

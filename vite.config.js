@@ -6,9 +6,8 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vite.dev/config/
 export default defineConfig({
-  // ¡Añade o modifica esta línea!
-  // Usar './' hace que las rutas de los assets sean relativas al directorio del index.html
-  base: './', 
+  // Configuración para producción y desarrollo
+  base: '/', 
 
   plugins: [
     vue(),
@@ -25,6 +24,15 @@ export default defineConfig({
         target: 'http://localhost:3003',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '')
+      }
+    }
+  },
+  build: {
+    outDir: 'dist',
+    sourcemap: false,
+    rollupOptions: {
+      output: {
+        manualChunks: undefined
       }
     }
   }
