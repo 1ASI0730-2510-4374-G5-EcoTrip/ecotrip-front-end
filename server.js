@@ -54,6 +54,13 @@ server.get('/api/users', (req, res, next) => {
     if (email && password && role) {
         console.log('Recibida solicitud de login GET en /api/users:', { email, password: '***', role });
         
+        // Evitar caché para login
+        res.set({
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0'
+        });
+        
         try {
             const users = router.db.get('users').value();
             console.log('Total de usuarios en BD:', users.length);
@@ -93,6 +100,13 @@ server.get('/api/users', (req, res, next) => {
 server.post('/api/auth/login', (req, res) => {
     console.log('POST /api/auth/login - Body:', req.body);
     console.log('Recibida solicitud de login POST en /api/auth/login:', req.body);
+    
+    // Evitar caché para login
+    res.set({
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+    });
     
     const { email, password, role } = req.body;
     
