@@ -7,14 +7,17 @@ WORKDIR /app
 # Copiar archivos de dependencias
 COPY package*.json ./
 
-# Instalar dependencias
-RUN npm ci
+# Instalar todas las dependencias (incluidas las de desarrollo para el build)
+RUN npm install
 
 # Copiar el resto de archivos del proyecto
 COPY . .
 
 # Construir la aplicación para producción
 RUN npm run build
+
+# Limpiar dependencias de desarrollo después del build
+RUN npm prune --production
 
 # Establecer variable de entorno para producción
 ENV NODE_ENV=production
