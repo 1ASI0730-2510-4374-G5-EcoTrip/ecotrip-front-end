@@ -44,13 +44,13 @@ if (process.env.NODE_ENV === 'production' || process.env.PORT) {
     server.use(express.static(path.join(__dirname, 'dist')));
 }
 
-// Ruta de login GET (para compatibilidad con frontend)
-server.get('/users', (req, res, next) => {
+// Ruta de login GET (para compatibilidad con frontend) - CON PREFIJO /api
+server.get('/api/users', (req, res, next) => {
     const { email, password, role } = req.query;
     
     // Si tiene parámetros de login, tratar como autenticación
     if (email && password && role) {
-        console.log('Recibida solicitud de login GET:', { email, password: '***', role });
+        console.log('Recibida solicitud de login GET en /api/users:', { email, password: '***', role });
         
         try {
             const users = router.db.get('users').value();
@@ -76,9 +76,9 @@ server.get('/users', (req, res, next) => {
     next();
 });
 
-// Ruta de login POST
-server.post('/auth/login', (req, res) => {
-    console.log('Recibida solicitud de login POST:', req.body);
+// Ruta de login POST - CON PREFIJO /api
+server.post('/api/auth/login', (req, res) => {
+    console.log('Recibida solicitud de login POST en /api/auth/login:', req.body);
     
     const { email, password, role } = req.body;
     
@@ -107,18 +107,14 @@ server.post('/auth/login', (req, res) => {
     }
 });
 
-// Usar el router de json-server para las rutas de API
-server.use(router);
+// Usar el router de json-server para las rutas de API con prefijo /api
+server.use('/api', router);
 
 // Manejar todas las rutas SPA que no son API (debe ir al final)
 if (process.env.NODE_ENV === 'production' || process.env.PORT) {
     server.get('*', (req, res) => {
-        // Solo redirigir si no es una ruta de API
-        if (!req.path.startsWith('/users') && 
-            !req.path.startsWith('/experiences') && 
-            !req.path.startsWith('/reservations') && 
-            !req.path.startsWith('/reviews') &&
-            !req.path.startsWith('/auth')) {
+        // Solo redirigir si no es una ruta de API (con prefijo /api)
+        if (!req.path.startsWith('/api')) {
             res.sendFile(path.join(__dirname, 'dist', 'index.html'));
         }
     });
