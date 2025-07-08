@@ -38,11 +38,9 @@ server.use((req, res, next) => {
     next();
 });
 
-// Servir archivos estáticos del frontend en producción PRIMERO
-if (process.env.NODE_ENV === 'production' || process.env.PORT) {
-    console.log('Configurando archivos estáticos para producción');
-    server.use(express.static(path.join(__dirname, 'dist')));
-}
+// Servir archivos estáticos del frontend
+console.log('Configurando archivos estáticos');
+server.use(express.static(path.join(__dirname, 'dist')));
 
 // Ruta de login GET (para compatibilidad con frontend) - CON PREFIJO /api
 server.get('/api/users', (req, res, next) => {
@@ -152,14 +150,12 @@ server.post('/api/auth/login', (req, res) => {
 server.use('/api', router);
 
 // Manejar todas las rutas SPA que no son API (debe ir al final)
-if (process.env.NODE_ENV === 'production' || process.env.PORT) {
-    server.get('*', (req, res) => {
-        // Solo redirigir si no es una ruta de API (con prefijo /api)
-        if (!req.path.startsWith('/api')) {
-            res.sendFile(path.join(__dirname, 'dist', 'index.html'));
-        }
-    });
-}
+server.get('*', (req, res) => {
+    // Solo redirigir si no es una ruta de API (con prefijo /api)
+    if (!req.path.startsWith('/api')) {
+        res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+    }
+});
 
 // Iniciar el servidor
 server.listen(port, '0.0.0.0', () => {
