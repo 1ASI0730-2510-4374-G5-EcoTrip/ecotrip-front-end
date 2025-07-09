@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npm install && vite build",
+    "build": "vite build",
     "preview": "vite preview",
     "server": "json-server --watch db.json --port 3003",
     "start": "npm-run-all --parallel dev server",
@@ -28,7 +28,6 @@
     "vue-router": "^4.2.4"
   },
   "devDependencies": {
-    "@rollup/rollup-win32-x64-msvc": "^4.44.2",
     "@vitejs/plugin-vue": "^5.2.3",
     "cors": "^2.8.5",
     "npm-run-all": "^4.1.5",

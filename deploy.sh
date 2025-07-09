@@ -13,5 +13,5 @@ echo " Construyendo el proyecto..."
 npm run build
 
 # Iniciar el servidor de producción
-echo " Iniciando servidor de producción..."
+echo "| Iniciando servidor de producción..."
 npm run start:prod
