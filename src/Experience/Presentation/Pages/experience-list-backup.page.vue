@@ -98,102 +98,33 @@
         v-for="experience in filteredExperiences"
         :key="experience.id"
         :experience="experience"
+        @click="viewExperience(experience.id)"
       />
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch, onBeforeUnmount, nextTick } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
+import { ref, onMounted, computed } from 'vue';
+import { useRouter } from 'vue-router';
 import { AuthSession } from '@/Auth/Domain/auth-session.aggregate';
 import { ExperienceService } from '@/Experience/Application/experience.service';
-import { usePageState } from '@/Shared/Application/page-state.service';
 import ExperienceCard from '../Components/experience-card.component.vue';
 
 const router = useRouter();
-const route = useRoute();
 const experienceService = new ExperienceService();
-const pageState = usePageState('experiences');
 
 const experiences = ref([]);
 const loading = ref(true);
 const error = ref(null);
 const isAgency = ref(false);
 
-// Filtros con estado persistente
+// Filtros
 const searchQuery = ref('');
 const selectedType = ref('');
 const selectedDifficulty = ref('');
 const selectedPriceRange = ref('');
 const onlyEcoFriendly = ref(false);
-
-// Función para guardar estado actual
-const saveCurrentState = () => {
-  const state = {
-    filters: {
-      searchQuery: searchQuery.value,
-      selectedType: selectedType.value,
-      selectedDifficulty: selectedDifficulty.value,
-      selectedPriceRange: selectedPriceRange.value,
-      onlyEcoFriendly: onlyEcoFriendly.value
-    },
-    scrollPosition: window.scrollY,
-    data: experiences.value
-  };
-  pageState.saveState(state);
-};
-
-// Función para restaurar estado
-const restoreState = () => {
-  if (pageState.hasState()) {
-    console.log('[ExperienceList] Restoring previous state...');
-    pageState.setRestoring(true);
-    
-    const state = pageState.restoreState();
-    
-    if (state.filters) {
-      searchQuery.value = state.filters.searchQuery || '';
-      selectedType.value = state.filters.selectedType || '';
-      selectedDifficulty.value = state.filters.selectedDifficulty || '';
-      selectedPriceRange.value = state.filters.selectedPriceRange || '';
-      onlyEcoFriendly.value = state.filters.onlyEcoFriendly || false;
-    }
-    
-    if (state.data && state.data.length > 0) {
-      experiences.value = state.data;
-      loading.value = false;
-    }
-    
-    // Restaurar scroll después de que el DOM se actualice
-    nextTick(() => {
-      pageState.restoreScroll();
-      pageState.setRestoring(false);
-    });
-    
-    return true;
-  }
-  return false;
-};
-
-// Watch para filtros - guardar estado cuando cambien
-watch([searchQuery, selectedType, selectedDifficulty, selectedPriceRange, onlyEcoFriendly], 
-  () => {
-    if (!pageState.isRestoring()) {
-      saveCurrentState();
-    }
-  }, { deep: true });
-
-// Watch para scroll
-let scrollTimeout;
-window.addEventListener('scroll', () => {
-  clearTimeout(scrollTimeout);
-  scrollTimeout = setTimeout(() => {
-    if (!pageState.isRestoring()) {
-      pageState.saveScroll(window.scrollY);
-    }
-  }, 100);
-});
 
 // Computed para tipos de experiencia únicos
 const experienceTypes = computed(() => {
@@ -267,40 +198,48 @@ onMounted(async () => {
   const session = AuthSession.fromStorage();
   isAgency.value = session?.isAgency() ?? false;
 
-  // Intentar restaurar estado anterior
-  const hasRestoredState = restoreState();
-  
-  if (!hasRestoredState) {
-    // Solo cargar datos si no se restauró estado previo
-    try {
-      loading.value = true;
-      experiences.value = await experienceService.getAllExperiences();
-      console.log('[ExperienceList] Loaded experiences:', experiences.value);
-      console.log('[ExperienceList] First experience:', experiences.value[0]);
-      console.log('[ExperienceList] First experience ID:', experiences.value[0]?.id);
-      saveCurrentState(); // Guardar estado inicial
-    } catch (err) {
-      console.error('Error loading experiences:', err);
-      error.value = err.message;
-    } finally {
-      loading.value = false;
-    }
+  try {
+    loading.value = true;
+    experiences.value = await experienceService.getAllExperiences();
+  } catch (err) {
+    console.error('Error loading experiences:', err);
+    error.value = err.message;
+  } finally {
+    loading.value = false;
   }
 });
 
-// Guardar estado antes de salir de la página
-onBeforeUnmount(() => {
-  console.log('[ExperienceList] Saving state before unmount...');
-  saveCurrentState();
-});
-
 function createNewExperience() {
-  saveCurrentState(); // Guardar estado antes de navegar
   router.push('/manage-experiences/create');
 }
 
 function viewExperience(id) {
-  saveCurrentState(); // Guardar estado antes de navegar
+  router.push(`/experiences/${id}`);
+}
+
+function clearFilters() {
+  searchQuery.value = '';
+  selectedType.value = '';
+  selectedDifficulty.value = '';
+  selectedPriceRange.value = '';
+  onlyEcoFriendly.value = false;
+}
+</script>
+    loading.value = true;
+    experiences.value = await experienceService.getAllExperiences();
+  } catch (err) {
+    console.error('Error loading experiences:', err);
+    error.value = err.message;
+  } finally {
+    loading.value = false;
+  }
+});
+
+function createNewExperience() {
+  router.push('/manage-experiences/create');
+}
+
+function viewExperience(id) {
   router.push(`/experiences/${id}`);
 }
 

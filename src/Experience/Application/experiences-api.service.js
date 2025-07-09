@@ -3,7 +3,7 @@ import { ExperienceAssembler } from './experience.assembler.js';
 
 export class ExperiencesApiService {
     constructor() {
-        this.baseURL = 'http://localhost:3000';
+        this.baseURL = 'http://localhost:3003';
     }
     async getExperiences() {
         try {
@@ -18,7 +18,12 @@ export class ExperiencesApiService {
     async getById(id) {
         try {
             if (!id) throw new Error('Experience ID is required');
-            const response = await http.get(`/experiences/${id}`);
+            
+            // Convertir el ID a string si es un objeto
+            const stringId = String(id);
+            console.log('[ExperiencesApiService] Getting experience by ID:', stringId);
+            
+            const response = await http.get(`/experiences/${stringId}`);
             return response;
         } catch (error) {
             console.error('[ExperiencesApiService] Error fetching experience:', error);

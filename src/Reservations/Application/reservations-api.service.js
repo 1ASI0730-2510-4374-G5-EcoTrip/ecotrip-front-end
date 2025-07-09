@@ -7,7 +7,8 @@ export class ReservationsApiService {
             return response
         } catch (error) {
             console.error('[ReservationsApiService] Error creating reservation:', error)
-            throw error
+            // No relanzar el error para evitar bloquear la navegación
+            return { data: [], error: error.message }
         }
     }
 
@@ -17,7 +18,8 @@ export class ReservationsApiService {
             return response
         } catch (error) {
             console.error('[ReservationsApiService] Error fetching tourist reservations:', error)
-            throw error
+            // Devolver estructura vacía en lugar de error
+            return { data: [], error: error.message }
         }
     }
 
@@ -27,7 +29,8 @@ export class ReservationsApiService {
             return response
         } catch (error) {
             console.error('[ReservationsApiService] Error fetching agency reservations:', error)
-            throw error
+            // Devolver estructura vacía en lugar de error
+            return { data: [], error: error.message }
         }
     }
 
@@ -37,7 +40,7 @@ export class ReservationsApiService {
             return response
         } catch (error) {
             console.error('[ReservationsApiService] Error updating reservation status:', error)
-            throw error
+            return { data: null, error: error.message }
         }
     }
 
@@ -47,7 +50,7 @@ export class ReservationsApiService {
             return response
         } catch (error) {
             console.error('[ReservationsApiService] Error fetching reservation details:', error)
-            throw error
+            return { data: null, error: error.message }
         }
     }
 }

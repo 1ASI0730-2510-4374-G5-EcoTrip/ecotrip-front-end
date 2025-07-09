@@ -1,5 +1,5 @@
 <template>
-  <div class="experience-card" @click="navigateToExperience">
+  <router-link :to="'/experiences/' + experience.id" class="experience-card">
     <div class="image-container">
       <img :src="getImageUrl()" :alt="getTitle()" class="experience-image" @error="onImageError">
       <div class="image-overlay">
@@ -49,14 +49,10 @@
         </div>
       </div>
     </div>
-  </div>
+  </router-link>
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router';
-
-const router = useRouter();
-
 const props = defineProps({
   experience: {
     type: Object,
@@ -64,33 +60,9 @@ const props = defineProps({
   }
 });
 
-// Navigation handler
-const navigateToExperience = () => {
-  console.log('[ExperienceCard] =================');
-  console.log('[ExperienceCard] RAW Experience object:', JSON.stringify(props.experience, null, 2));
-  console.log('[ExperienceCard] Experience keys:', Object.keys(props.experience || {}));
-  
-  const experienceId = props.experience?.id;
-  console.log('[ExperienceCard] Experience ID extracted:', experienceId);
-  console.log('[ExperienceCard] ID type:', typeof experienceId);
-  console.log('[ExperienceCard] ID constructor:', experienceId?.constructor?.name);
-  
-  if (experienceId) {
-    // Forzar conversión a string
-    const stringId = String(experienceId);
-    console.log('[ExperienceCard] String ID:', stringId);
-    console.log('[ExperienceCard] Navigating to:', `/experiences/${stringId}`);
-    
-    router.push(`/experiences/${stringId}`);
-  } else {
-    console.error('[ExperienceCard] No experience ID found');
-  }
-  console.log('[ExperienceCard] =================');
-};
-
 // Helper methods for data extraction
 const getTitle = () => {
-  return props.experience?.title || 'Experiencia';
+  return props.experience?.title?.value || props.experience?.title || 'Experiencia';
 };
 
 const getImageUrl = () => {
@@ -102,19 +74,19 @@ const getImageUrl = () => {
 };
 
 const getLocation = () => {
-  return props.experience?.location || 'Ubicación no disponible';
+  return props.experience?.location?.value || props.experience?.location || 'Ubicación no disponible';
 };
 
 const getType = () => {
-  return props.experience?.type || 'Aventura';
+  return props.experience?.type?.value || props.experience?.type || 'Aventura';
 };
 
 const getDifficulty = () => {
-  return props.experience?.difficultyLevel || 'Moderado';
+  return props.experience?.difficultyLevel?.value || props.experience?.difficultyLevel || 'Moderado';
 };
 
 const getMaxParticipants = () => {
-  return props.experience?.maxParticipants || '8';
+  return props.experience?.maxParticipants?.value || props.experience?.maxParticipants || '8';
 };
 
 const getDurationText = () => {
@@ -179,7 +151,6 @@ const onImageError = (event) => {
   text-decoration: none;
   color: inherit;
   border: 1px solid #f1f5f9;
-  cursor: pointer;
 }
 
 .experience-card:hover {

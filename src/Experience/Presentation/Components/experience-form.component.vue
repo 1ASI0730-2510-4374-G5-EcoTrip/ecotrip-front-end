@@ -28,8 +28,8 @@
 
       <div class="form-row">
         <div class="form-group">
-          <label>Precio (S/)</label>
-          <input-number v-model="form.price" mode="currency" currency="PEN" required />
+          <label>Precio (EUR)</label>
+          <input-number v-model="form.price" mode="currency" currency="EUR" required />
         </div>
         <div class="form-group">
           <label>Máximo de Participantes</label>
@@ -85,8 +85,8 @@
       </div>
 
       <div class="form-group">
-        <label>Información Importante</label>
-        <textarea v-model="form.important" class="form-textarea"></textarea>
+        <label>Requisitos/Información Importante</label>
+        <textarea v-model="form.important" class="form-textarea" placeholder="Separar con comas"></textarea>
       </div>
 
       <div class="form-actions">
@@ -132,7 +132,7 @@ const form = ref({
     sustainablePractices: [],
     localCommunityImpact: ''
   },
-  difficulty: 'medium',
+  difficulty: 'Moderado',
   languages: ['Español']
 });
 
@@ -141,35 +141,45 @@ onMounted(async () => {
   if (!session?.isAgency()) {
     router.push('/experiences');
     return;
-  }
-
-  if (isEditing.value) {
-    try {
-      loading.value = true;
-      const experience = await experienceService.getExperienceById(route.params.id);
-      form.value = {
-        title: experience.title.value,
-        description: experience.description.value,
-        location: experience.location.value,
-        duration: experience.duration.value,
-        price: experience.price.value,
-        maxGroupSize: experience.maxGroupSize,
-        images: [...experience.images],
-        included: [...experience.included],
-        notIncluded: [...experience.notIncluded],
-        important: experience.important,
-        categories: [...experience.categories],
-        sustainability: {...experience.sustainability},
-        difficulty: experience.difficulty,
-        languages: [...experience.languages]
-      };
-    } catch (err) {
-      console.error('Error loading experience:', err);
-      error.value = err.message;
-    } finally {
-      loading.value = false;
+  }    if (isEditing.value) {
+      try {
+        loading.value = true;
+        const experience = await experienceService.getExperienceById(route.params.id);
+        
+        // Cargar datos simples desde la API
+        form.value = {
+          title: experience.title || '',
+          description: experience.description || '',
+          location: experience.location || '',
+          duration: `${experience.duration?.value || 0} ${experience.duration?.unit || 'hours'}`,
+          price: experience.price?.amount || experience.price || 0,
+          maxGroupSize: experience.maxParticipants || experience.maxGroupSize || 10,
+          images: experience.images || [''],
+          included: experience.includedItems || experience.included || [''],
+          notIncluded: experience.notIncluded || [''],
+          important: experience.requirements?.join(', ') || experience.important || '',
+          categories: experience.categories || [],
+          sustainability: experience.sustainability || {
+            ecoCertifications: experience.ecoCertifications || [],
+            sustainablePractices: experience.sustainablePractices || [],
+            localCommunityImpact: experience.localCommunityImpact || ''
+          },
+          difficulty: experience.difficultyLevel || experience.difficulty || 'medium',
+          languages: experience.languages || ['Español']
+        };
+        
+        // Asegurar que no haya arrays vacíos
+        if (form.value.images.length === 0) form.value.images = [''];
+        if (form.value.included.length === 0) form.value.included = [''];
+        if (form.value.notIncluded.length === 0) form.value.notIncluded = [''];
+        
+      } catch (err) {
+        console.error('Error loading experience:', err);
+        error.value = err.message;
+      } finally {
+        loading.value = false;
+      }
     }
-  }
 });
 
 async function saveExperience() {
@@ -177,21 +187,67 @@ async function saveExperience() {
     loading.value = true;
     const session = AuthSession.fromStorage();
     
+    // Preparar datos para la API
     const experienceData = {
-      ...form.value,
-      agencyId: session.userId
+      title: form.value.title,
+      description: form.value.description,
+      location: form.value.location,
+      duration: {
+        value: parseInt(form.value.duration.split(' ')[0]) || 1,
+        unit: form.value.duration.split(' ')[1] || 'hours'
+      },
+      price: {
+        amount: form.value.price,
+        currency: 'EUR'
+      },
+      maxParticipants: form.value.maxGroupSize,
+      images: form.value.images.filter(img => img.trim() !== ''),
+      includedItems: form.value.included.filter(item => item.trim() !== ''),
+      requirements: form.value.important.split(',').map(req => req.trim()).filter(req => req !== ''),
+      ecoCertifications: form.value.sustainability.ecoCertifications || [],
+      sustainablePractices: form.value.sustainability.sustainablePractices || [],
+      localCommunityImpact: form.value.sustainability.localCommunityImpact || '',
+      difficultyLevel: form.value.difficulty,
+      agencyId: session.userId,
+      type: 'Naturaleza',
+      rating: 4.5,
+      reviewCount: 0,
+      isSustainable: true,
+      availableDates: []
     };
 
     if (isEditing.value) {
-      await experienceService.updateExperience(route.params.id, experienceData);
+      const response = await fetch(`http://localhost:3003/experiences/${route.params.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(experienceData),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Error al actualizar la experiencia');
+      }
     } else {
-      await experienceService.createExperience(experienceData);
+      const response = await fetch('http://localhost:3003/experiences', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(experienceData),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Error al crear la experiencia');
+      }
     }
 
+    alert(isEditing.value ? 'Experiencia actualizada exitosamente' : 'Experiencia creada exitosamente');
     router.push('/manage-experiences');
   } catch (err) {
     console.error('Error saving experience:', err);
     error.value = err.message;
+    alert('Error al guardar la experiencia');
   } finally {
     loading.value = false;
   }
@@ -315,6 +371,21 @@ label {
 
 .add-button:hover {
   background: #b2dfdb;
+}
+
+.form-select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  background: white;
+  color: #1e293b;
+  font-size: 1rem;
+}
+
+.form-select:focus {
+  outline: none;
+  border-color: #047e77;
 }
 
 .form-actions {

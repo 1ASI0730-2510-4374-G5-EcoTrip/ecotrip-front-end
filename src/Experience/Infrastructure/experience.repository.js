@@ -8,8 +8,12 @@ export class ExperienceRepository {
 
     async findAll() {
         try {
+            console.log('[ExperienceRepository] Finding all experiences...');
             const response = await this.apiService.getExperiences();
-            return ExperienceAssembler.toEntitiesFromResponse(response);
+            console.log('[ExperienceRepository] API response:', response);
+            const assembled = ExperienceAssembler.toEntitiesFromResponse(response);
+            console.log('[ExperienceRepository] Assembled entities:', assembled);
+            return assembled;
         } catch (error) {
             console.error('[ExperienceRepository] Error getting experiences:', error);
             throw error;
@@ -18,7 +22,11 @@ export class ExperienceRepository {
 
     async findById(id) {
         try {
-            const response = await this.apiService.getById(id);
+            // Convertir el ID a string para evitar problemas con objetos
+            const stringId = String(id);
+            console.log('[ExperienceRepository] Finding experience by ID:', stringId);
+            
+            const response = await this.apiService.getById(stringId);
             return ExperienceAssembler.toEntityFromResource(response.data);
         } catch (error) {
             console.error(`[ExperienceRepository] Error getting experience with id ${id}:`, error);

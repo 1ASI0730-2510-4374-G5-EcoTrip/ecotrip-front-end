@@ -57,7 +57,7 @@ const links = computed(() => {
     return [
       { label: 'Inicio',                   path: '/experiences',       icon: 'pi pi-home' },
       { label: 'Gestionar Experiencias',   path: '/manage-experiences',icon: 'pi pi-list' },
-      { label: 'Reservas',                 path: '/reservations',      icon: 'pi pi-calendar' },
+      { label: 'Mis Reservas',             path: '/agency-reservations',icon: 'pi pi-calendar' },
       { label: 'Mi Perfil',                path: '/agency/profile',    icon: 'pi pi-user' }
     ]
   } else {

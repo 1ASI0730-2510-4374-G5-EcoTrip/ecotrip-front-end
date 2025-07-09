@@ -3,7 +3,10 @@ import { Experience } from '../Domain/experience.entity.js';
 export class ExperienceAssembler {    static toEntityFromResource(resource) {
         if (!resource) return null;
         
-        return new Experience({
+        console.log('[ExperienceAssembler] Processing resource:', resource);
+        
+        // Crear un objeto más simple sin usar value objects complejos
+        const entity = {
             id: resource.id || Date.now().toString(),
             title: resource.title || '',
             description: resource.description || '',
@@ -25,17 +28,45 @@ export class ExperienceAssembler {    static toEntityFromResource(resource) {
             maxGroupSize: resource.maxParticipants || 10,
             languages: resource.languages || ['Español'],
             reviews: resource.reviews || []
-        });
+        };
+        
+        console.log('[ExperienceAssembler] Created entity with ID:', entity.id, 'Type:', typeof entity.id);
+        return entity;
     }
 
     static toEntitiesFromResponse(response) {
-        if (!response?.data) {
-            console.error('Invalid response:', response);
+        console.log('[ExperienceAssembler] Processing response:', response);
+        
+        if (!response) {
+            console.error('[ExperienceAssembler] No response provided');
             return [];
         }
-        return Array.isArray(response.data) 
-            ? response.data.map(exp => this.toEntityFromResource(exp))
-            : [this.toEntityFromResource(response.data)];
+        
+        // Manejar tanto response.data como response directamente
+        let dataArray;
+        if (response.data) {
+            dataArray = response.data;
+        } else if (Array.isArray(response)) {
+            dataArray = response;
+        } else {
+            console.error('[ExperienceAssembler] Invalid response format:', response);
+            return [];
+        }
+        
+        if (!Array.isArray(dataArray)) {
+            console.error('[ExperienceAssembler] Data is not an array:', dataArray);
+            return [];
+        }
+        
+        console.log('[ExperienceAssembler] Processing', dataArray.length, 'experiences');
+        
+        const entities = dataArray.map(exp => {
+            console.log('[ExperienceAssembler] Processing experience:', exp);
+            return this.toEntityFromResource(exp);
+        });
+        
+        console.log('[ExperienceAssembler] Generated entities:', entities);
+        return entities;
     }    static toRequestPayload(entity) {
         const [durationValue, durationUnit] = entity.duration.value.split(' ');
         return {

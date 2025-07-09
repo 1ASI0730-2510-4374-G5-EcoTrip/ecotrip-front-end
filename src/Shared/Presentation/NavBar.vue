@@ -19,6 +19,10 @@
           <i class="pi pi-list"></i>
           {{ t('nav.manageExperiences') }}
         </router-link>
+        <router-link to="/agency-reservations" class="nav-link" active-class="router-link-active">
+          <i class="pi pi-calendar"></i>
+          Mis Reservas
+        </router-link>
         <router-link to="/agency/profile" class="nav-link" active-class="router-link-active">
           <i class="pi pi-user"></i>
           {{ t('nav.profile') }}
@@ -29,7 +33,7 @@
           <i class="pi pi-user"></i>
           {{ t('nav.profile') }}
         </router-link>
-        <router-link to="/bookings" class="nav-link" active-class="router-link-active">
+        <router-link to="/reservations" class="nav-link" active-class="router-link-active">
           <i class="pi pi-calendar"></i>
           {{ t('nav.myBookings') }}
         </router-link>

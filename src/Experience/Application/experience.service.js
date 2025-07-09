@@ -14,8 +14,12 @@ export class ExperienceService {
 
     async getAllExperiences() {
         try {
+            console.log('[ExperienceService] Getting all experiences...');
             const experiences = await this.experienceRepository.findAll();
-            return experiences.map(exp => ExperienceAssembler.toEntityFromResource(exp));
+            console.log('[ExperienceService] Raw experiences from repo:', experiences);
+            const assembledExperiences = experiences.map(exp => ExperienceAssembler.toEntityFromResource(exp));
+            console.log('[ExperienceService] Assembled experiences:', assembledExperiences);
+            return assembledExperiences;
         } catch (error) {
             console.error('Error getting experiences:', error);
             throw new Error('Failed to fetch experiences');
@@ -24,8 +28,14 @@ export class ExperienceService {
 
     async getExperienceById(id) {
         try {
-            const experience = await this.experienceRepository.findById(id);            if (!experience) {
-                throw new ExperienceNotFoundError(id);
+            console.log('[ExperienceService] Getting experience by ID:', id, 'Type:', typeof id);
+            // Asegurar que el ID es un string
+            const stringId = String(id);
+            console.log('[ExperienceService] String ID:', stringId);
+            
+            const experience = await this.experienceRepository.findById(stringId);
+            if (!experience) {
+                throw new ExperienceNotFoundError(stringId);
             }
             return ExperienceAssembler.toEntityFromResource(experience);
         } catch (error) {

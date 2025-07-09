@@ -32,14 +32,21 @@ http.interceptors.request.use(
 http.interceptors.response.use(
     response => response,
     error => {
+        console.error('[HttpClient] Response error:', error);
+        
         if (error.response?.status === 401) {
             // Limpiar datos de sesión
-            localStorage.clear(); // Limpiar toda la sesión
+            localStorage.clear();
             
-            // Redirigir al login preservando la URL actual
-            const currentPath = window.location.pathname;
-            window.location.href = `/login?redirect=${encodeURIComponent(currentPath)}`;
+            // Solo redirigir si no estamos ya en login
+            if (!window.location.pathname.includes('/login')) {
+                const currentPath = window.location.pathname;
+                console.log('[HttpClient] Redirecting to login due to 401');
+                window.location.href = `/login?redirect=${encodeURIComponent(currentPath)}`;
+            }
         }
+        
+        // Para otros errores, no bloquear la aplicación
         return Promise.reject(error);
     }
 );

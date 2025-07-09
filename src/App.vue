@@ -1,19 +1,33 @@
 <script setup>
 import { useRoute } from 'vue-router';
+import { watch } from 'vue';
 import DefaultLayout from '@/Shared/Presentation/DefaultLayout.vue';
+import PageTransition from '@/Shared/Presentation/page-transition.component.vue';
 import Toast from 'primevue/toast';
+
 const route = useRoute();
+
+// Watch for route changes to help with debugging
+watch(() => route.path, (newPath, oldPath) => {
+  if (process.env.NODE_ENV === 'development') {
+    console.log(`Route changed from ${oldPath} to ${newPath}`);
+  }
+}, { immediate: true });
 </script>
 
 <template>
   <Toast position="top-right" />
-  <router-view v-slot="{ Component }">
+  <router-view v-slot="{ Component, route }">
     <template v-if="route.meta.layout === 'auth'">
-      <Component :is="Component" />
+      <PageTransition>
+        <Component :is="Component" :key="route.fullPath" />
+      </PageTransition>
     </template>
     <template v-else>
       <DefaultLayout>
-        <Component :is="Component" />
+        <PageTransition>
+          <Component :is="Component" :key="route.fullPath" />
+        </PageTransition>
       </DefaultLayout>
     </template>
   </router-view>

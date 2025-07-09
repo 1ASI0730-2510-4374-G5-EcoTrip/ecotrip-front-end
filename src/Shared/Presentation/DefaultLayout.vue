@@ -52,17 +52,27 @@
     </div>
 
     <main class="main-content">
-      <router-view v-if="isAuthenticated"></router-view>
+      <div v-if="isLoading" class="loading-overlay">
+        <div class="loading-spinner">
+          <i class="pi pi-spinner pi-spin"></i>
+          <span>Cargando...</span>
+        </div>
+      </div>
+      <router-view v-if="isAuthenticated" :key="$route.fullPath"></router-view>
     </main>
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
-import { useRouter } from 'vue-router'
+import { computed, watch } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { AuthSession } from '@/Auth/Domain/auth-session.aggregate'
+import { navigationService } from '@/Shared/Application/navigation.service'
 
 const router = useRouter()
+const route = useRoute()
+
+// Computed properties for reactive state
 const session = computed(() => AuthSession.fromStorage())
 
 const isAuthenticated = computed(() => {
@@ -77,9 +87,47 @@ const profilePath = computed(() => {
   return isAgency.value ? '/agency/profile' : '/tourist/profile';
 })
 
+const isLoading = computed(() => navigationService.loading)
+
+// Watch for authentication changes
+watch([isAuthenticated], ([newAuth]) => {
+  if (!newAuth && route.path !== '/login') {
+    console.log('[DefaultLayout] Authentication lost, redirecting to login');
+    router.push('/login');
+  }
+}, { immediate: true });
+
+// Watch for route changes to update current section
+watch(() => route.path, (newPath) => {
+  console.log('[DefaultLayout] Route changed to:', newPath);
+  
+  // Actualizar sección actual
+  if (newPath.startsWith('/experiences')) {
+    navigationService.setCurrentSection('experiences');
+  } else if (newPath.startsWith('/manage-experiences')) {
+    navigationService.setCurrentSection('manage-experiences');
+  } else if (newPath.startsWith('/reservations')) {
+    navigationService.setCurrentSection('reservations');
+  } else if (newPath.startsWith('/agency/profile')) {
+    navigationService.setCurrentSection('agency-profile');
+  } else if (newPath.startsWith('/tourist/profile')) {
+    navigationService.setCurrentSection('tourist-profile');
+  }
+});
+
 const handleLogout = async () => {
-  AuthSession.clear();
-  await router.push('/login');
+  try {
+    navigationService.setLoading(true);
+    navigationService.clearHistory();
+    AuthSession.clear();
+    await router.push('/login');
+  } catch (error) {
+    console.error('Error during logout:', error);
+    // Force navigation even if there's an error
+    window.location.href = '/login';
+  } finally {
+    navigationService.setLoading(false);
+  }
 }
 
 const getHomeRedirect = () => {
@@ -206,6 +254,40 @@ const getHomeRedirect = () => {
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
+  position: relative;
+}
+
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.loading-spinner {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 2rem;
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.loading-spinner i {
+  font-size: 1.5rem;
+  color: #047e77;
+}
+
+.loading-spinner span {
+  font-weight: 500;
+  color: #374151;
 }
 
 @media (max-width: 768px) {

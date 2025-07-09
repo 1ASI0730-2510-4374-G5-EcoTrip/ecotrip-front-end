@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import DefaultLayout from '@/Shared/Presentation/DefaultLayout.vue';
 import { AuthSession } from '@/Auth/Domain/auth-session.aggregate.js';
+import { navigationService } from '@/Shared/Application/navigation.service.js';
 
 // Clean invalid sessions on router initialization
 const existingSession = AuthSession.fromStorage();
@@ -72,7 +73,7 @@ const routes = [
             {
                 path: '',
                 name: 'ManageExperiences',
-                component: () => import('@/Experience/Presentation/Pages/manage-experiences.page.vue'),
+                component: () => import('@/Experience/Presentation/Pages/manage-experiences-new.page.vue'),
                 beforeEnter: (to, from, next) => {
                     const session = AuthSession.fromStorage();
                     if (!session?.isAgency()) {
@@ -126,7 +127,36 @@ const routes = [
             {
                 path: '',
                 name: 'Reservations',
-                component: () => import('@/Reservations/Presentation/reservations-view.page.vue')
+                component: () => import('@/Reservations/Presentation/reservations-view.page.vue'),
+                beforeEnter: (to, from, next) => {
+                    const session = AuthSession.fromStorage();
+                    if (session?.isAgency()) {
+                        // Redirect agencies to their specific reservations page
+                        next('/agency-reservations');
+                    } else {
+                        next();
+                    }
+                }
+            }
+        ]
+    },
+    {
+        path: '/agency-reservations',
+        component: DefaultLayout,
+        meta: { requiresAuth: true, requiresAgency: true },
+        children: [
+            {
+                path: '',
+                name: 'AgencyReservations',
+                component: () => import('@/Reservations/Presentation/agency-reservations.page.vue'),
+                beforeEnter: (to, from, next) => {
+                    const session = AuthSession.fromStorage();
+                    if (!session?.isAgency()) {
+                        next('/reservations');
+                    } else {
+                        next();
+                    }
+                }
             }
         ]
     },
@@ -141,9 +171,26 @@ const router = createRouter({
     routes
 });
 
+// Manejo de errores de navegación
+router.onError((error, to) => {
+    console.error('[Router] Navigation error:', error);
+    const fallbackRoute = navigationService.handleNavigationError(error, to.path);
+    if (fallbackRoute) {
+        router.push(fallbackRoute);
+    }
+});
+
+// Después de cada navegación exitosa, limpiar el estado de carga
+router.afterEach(() => {
+    navigationService.setLoading(false);
+});
+
 router.beforeEach(async (to, from, next) => {
     const session = AuthSession.fromStorage();
     const isAuthenticated = session?.isValid() ?? false;
+
+    // Configurar estado de carga
+    navigationService.setLoading(true);
 
     // Debug logging
     if (process.env.NODE_ENV === 'development') {
@@ -156,19 +203,33 @@ router.beforeEach(async (to, from, next) => {
         });
     }
 
+    // Actualizar sección actual en el service
+    const sectionMap = {
+        '/experiences': 'experiences',
+        '/manage-experiences': 'manage-experiences',
+        '/reservations': 'reservations',
+        '/agency-reservations': 'agency-reservations',
+        '/agency/profile': 'agency-profile',
+        '/tourist/profile': 'tourist-profile'
+    };
+
+    const section = Object.keys(sectionMap).find(key => to.path.startsWith(key));
+    if (section) {
+        navigationService.setCurrentSection(sectionMap[section]);
+    }
+
     // Guest-only routes (login, register)
     if (to.meta.requiresGuest && isAuthenticated) {
+        console.log('[Router] Authenticated user trying to access guest route, redirecting to home');
+        navigationService.setLoading(false);
         next(getHomeRedirect());
         return;
     }
 
     // Authentication required routes
     if (to.meta.requiresAuth && !isAuthenticated) {
-        next('/login');
-        return;
-    }    // Si no hay sesión y la ruta no es login o register, redirigir al login
-    if (!isAuthenticated && !to.meta.requiresGuest) {
-        console.log('[Router] No authentication found, redirecting to login');
+        console.log('[Router] Unauthenticated user trying to access protected route, redirecting to login');
+        navigationService.setLoading(false);
         next({
             path: '/login',
             query: { redirect: to.fullPath }
@@ -176,30 +237,42 @@ router.beforeEach(async (to, from, next) => {
         return;
     }
 
-    if (isAuthenticated) {
-        const redirectPath = getHomeRedirect();
-        
-        // Si estamos en la raíz, redirigir según el tipo de usuario
-        if (to.path === '/') {
-            next(redirectPath);
+    // For the root path, redirect to appropriate home
+    if (to.path === '/') {
+        if (isAuthenticated) {
+            const redirect = getHomeRedirect();
+            console.log('[Router] Root path access, redirecting to:', redirect);
+            navigationService.setLoading(false);
+            next(redirect);
+        } else {
+            console.log('[Router] Root path access without auth, redirecting to login');
+            navigationService.setLoading(false);
+            next('/login');
+        }
+        return;
+    }
+
+    // Role-based access control
+    if (isAuthenticated && session) {
+        // Agency trying to access tourist-only routes
+        if (session.isAgency() && to.meta.requiresTourist) {
+            console.log('[Router] Agency trying to access tourist route, redirecting to home');
+            navigationService.setLoading(false);
+            next(getHomeRedirect());
             return;
         }
 
-        if (session.isAgency()) {
-            // Tourist-only routes are not accessible to agencies
-            if (to.meta.requiresTourist || to.path === '/experiences') {
-                next(redirectPath);
-                return;
-            }
-        } else if (session.isTourist()) {
-            // Agency-only routes are not accessible to tourists
-            if (to.meta.requiresAgency || to.path.startsWith('/manage-experiences')) {
-                next(redirectPath);
-                return;
-            }
+        // Tourist trying to access agency-only routes
+        if (session.isTourist() && to.meta.requiresAgency) {
+            console.log('[Router] Tourist trying to access agency route, redirecting to home');
+            navigationService.setLoading(false);
+            next(getHomeRedirect());
+            return;
         }
     }
 
+    // Continue with navigation
+    navigationService.setLoading(false);
     next();
 });
 

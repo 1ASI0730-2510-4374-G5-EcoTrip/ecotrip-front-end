@@ -8,7 +8,12 @@
       "role": "tourist",
       "avatar": "https://i.pravatar.cc/150?u=tourist1",
       "preferences": {
-        "adventureTypes": ["Montaña", "Playa", "Cultural", "Aventura"],
+        "adventureTypes": [
+          "Montaña",
+          "Playa",
+          "Cultural",
+          "Aventura"
+        ],
         "sustainability": true
       },
       "contactInfo": {
@@ -24,7 +29,10 @@
       "role": "agency",
       "avatar": "https://i.pravatar.cc/150?u=agency1",
       "description": "Ofrecemos las mejores experiencias ecológicas para viajeros responsables y conscientes con el medio ambiente.",
-      "certifications": ["Turismo Sostenible", "Eco-Friendly Certificado"],
+      "certifications": [
+        "Turismo Sostenible",
+        "Eco-Friendly Certificado"
+      ],
       "contactInfo": {
         "phone": "555-987-6543",
         "address": "Av. Naturaleza 456, Ciudad Eco",
@@ -44,31 +52,57 @@
     {
       "id": "1",
       "title": "Senderismo Consciente en la Sierra",
-      "description": "Explora senderos naturales con un enfoque en la flora, fauna local y prácticas de 'no dejar rastro'.",
+      "description": "Explora senderos naturales con un enfoque en la flora, fauna local y prácticas de 'no dejar rastro'. Una experiencia única que combina aventura con educación ambiental.",
       "type": "Naturaleza",
-      "location": "Cusco, Perú (cerca de Pisac)",      "duration": {
-      "value": 4,
-      "unit": "hours"
-    },
+      "location": "Cusco, Perú (cerca de Pisac)",
+      "duration": {
+        "value": 4,
+        "unit": "hours"
+      },
       "price": {
         "amount": 99,
         "currency": "EUR"
       },
+      "rating": 4.8,
+      "reviewCount": 15,
       "images": [
-        "https://images.unsplash.com/photo-1569321633833-df7b730bf57d"
+        "https://images.unsplash.com/photo-1569321633833-df7b730bf57d?w=800",
+        "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800",
+        "https://images.unsplash.com/photo-1551632811-561732d1e306?w=800"
       ],
       "isSustainable": true,
-      "ecoCertifications": ["Green Trail Certified"],
-      "sustainablePractices": ["Leave No Trace", "Apoyo a la comunidad local"],
+      "ecoCertifications": [
+        "Green Trail Certified"
+      ],
+      "sustainablePractices": [
+        "Leave No Trace",
+        "Apoyo a la comunidad local"
+      ],
       "localCommunityImpact": "Parte de los ingresos se destina a la reforestación local.",
       "agencyId": "2",
       "maxParticipants": 8,
       "difficultyLevel": "Moderado",
-      "includedItems": ["Guía experto en ecología", "Snacks orgánicos", "Agua reutilizable"],
-      "requirements": ["Condición física moderada", "Calzado de senderismo", "Botella de agua reutilizable"]
-    },    {      "id": "2",
+      "includedItems": [
+        "Guía experto en ecología",
+        "Snacks orgánicos",
+        "Agua reutilizable"
+      ],
+      "requirements": [
+        "Condición física moderada",
+        "Calzado de senderismo",
+        "Botella de agua reutilizable"
+      ],
+      "availableDates": [
+        "2025-07-15T09:00:00.000Z",
+        "2025-07-18T09:00:00.000Z",
+        "2025-07-22T09:00:00.000Z",
+        "2025-07-25T09:00:00.000Z"
+      ]
+    },
+    {
+      "id": "2",
       "title": "Ruta Ecológica a Machu Picchu",
-      "description": "Una experiencia inmersiva que combina la historia inca con prácticas de turismo sostenible en la ruta y en el sitio arqueológico.",
+      "description": "Una experiencia inmersiva que combina la historia inca con prácticas de turismo sostenible en la ruta y en el sitio arqueológico. Vive la magia de Machu Picchu de manera responsable.",
       "type": "Cultural & Ecológico",
       "location": "Cusco, Perú",
       "duration": {
@@ -82,42 +116,476 @@
       "rating": 4.6,
       "reviewCount": 18,
       "images": [
-        "https://images.unsplash.com/photo-1526392060635-9d6019884377"
+        "https://images.unsplash.com/photo-1526392060635-9d6019884377?w=800",
+        "https://images.unsplash.com/photo-1587595431973-160d0d94add1?w=800",
+        "https://images.unsplash.com/photo-1539650116574-75c0c6d73f6e?w=800"
       ],
       "isSustainable": true,
-      "ecoCertifications": ["Sustainable Travel International"],
-      "sustainablePractices": ["Transporte de bajo impacto", "Manejo de residuos", "Conservación del patrimonio"],
+      "ecoCertifications": [
+        "Sustainable Travel International"
+      ],
+      "sustainablePractices": [
+        "Transporte de bajo impacto",
+        "Manejo de residuos",
+        "Conservación del patrimonio"
+      ],
       "localCommunityImpact": "Colaboración con artesanos y proveedores locales en Aguas Calientes.",
       "agencyId": "2",
       "maxParticipants": 6,
       "difficultyLevel": "Moderado",
-      "includedItems": ["Guía especializado", "Transporte ecológico", "Permisos", "Cenas y desayunos sostenibles"],
-      "requirements": ["Preparación para caminatas largas", "Respeto por las normas del sitio"]
+      "includedItems": [
+        "Guía especializado",
+        "Transporte ecológico",
+        "Permisos",
+        "Cenas y desayunos sostenibles"
+      ],
+      "requirements": [
+        "Preparación para caminatas largas",
+        "Respeto por las normas del sitio"
+      ],
+      "availableDates": [
+        "2025-07-20T06:00:00.000Z",
+        "2025-07-27T06:00:00.000Z",
+        "2025-08-03T06:00:00.000Z",
+        "2025-08-10T06:00:00.000Z"
+      ]
     },
     {
       "id": "3",
       "title": "Expedición Amazónica Sostenible",
-      "description": "Una inmersión profunda en la selva amazónica, enfocada en la observación de vida silvestre y el apoyo a la conservación comunitaria.",      "price": {
-      "amount": 450.00,
-      "currency": "EUR"
-    },
+      "description": "Una inmersión profunda en la selva amazónica, enfocada en la observación de vida silvestre y el apoyo a la conservación comunitaria. Descubre la biodiversidad más rica del planeta.",
+      "type": "Aventura & Naturaleza",
       "location": "Amazonía, Perú",
       "duration": {
         "value": 3,
         "unit": "days"
       },
+      "price": {
+        "amount": 450,
+        "currency": "EUR"
+      },
+      "rating": 4.9,
+      "reviewCount": 12,
       "images": [
-        "https://picsum.photos/500/300?random=1"
+        "https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=800",
+        "https://images.unsplash.com/photo-1540979388789-6cee28a1cdc9?w=800",
+        "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800"
       ],
       "isSustainable": true,
-      "ecoCertifications": ["Rainforest Alliance Certified", "Adventure Green"],
-      "sustainablePractices": ["Zero Waste", "Apoyo a comunidades indígenas", "Protección de la biodiversidad"],
+      "ecoCertifications": [
+        "Rainforest Alliance Certified",
+        "Adventure Green"
+      ],
+      "sustainablePractices": [
+        "Zero Waste",
+        "Apoyo a comunidades indígenas",
+        "Protección de la biodiversidad"
+      ],
       "localCommunityImpact": "El 40% de los ingresos beneficia directamente a la comunidad local para educación y salud.",
-      "difficultyLevel": "Moderado a Difícil",
+      "agencyId": "2",
       "maxParticipants": 10,
-      "languages": ["Español", "Inglés"],
-      "includedItems": ["Alojamiento en lodge ecológico", "Transporte fluvial de bajo impacto", "Guía local bilingüe", "Comidas orgánicas de la región"],
-      "requirements": ["Vacunas al día", "Ropa de manga larga", "Repelente ecológico"]
+      "difficultyLevel": "Moderado a Difícil",
+      "includedItems": [
+        "Alojamiento en lodge ecológico",
+        "Transporte fluvial de bajo impacto",
+        "Guía local bilingüe",
+        "Comidas orgánicas de la región"
+      ],
+      "requirements": [
+        "Vacunas al día",
+        "Ropa de manga larga",
+        "Repelente ecológico"
+      ],
+      "availableDates": [
+        "2025-08-01T08:00:00.000Z",
+        "2025-08-08T08:00:00.000Z",
+        "2025-08-15T08:00:00.000Z",
+        "2025-08-22T08:00:00.000Z"
+      ]
+    },
+    {
+      "id": "4",
+      "title": "Avistamiento de Ballenas Sostenible",
+      "description": "Una experiencia única de observación de ballenas desde un enfoque completamente sostenible. Navegación responsable con embarcaciones eléctricas y guías expertos en biología marina.",
+      "type": "Acuático & Naturaleza",
+      "location": "Bahía de Banderas, Puerto Vallarta",
+      "duration": {
+        "value": 6,
+        "unit": "hours"
+      },
+      "price": {
+        "amount": 150,
+        "currency": "EUR"
+      },
+      "rating": 4.7,
+      "reviewCount": 22,
+      "images": [
+        "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800",
+        "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800",
+        "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=800",
+        "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800"
+      ],
+      "isSustainable": true,
+      "ecoCertifications": [
+        "Blue Flag Marine",
+        "Ocean Stewardship Council"
+      ],
+      "sustainablePractices": [
+        "Embarcaciones eléctricas",
+        "Distancias respetuosas con la vida marina",
+        "Educación sobre conservación marina"
+      ],
+      "localCommunityImpact": "Colaboración con pescadores locales para monitoreo de especies y apoyo económico.",
+      "agencyId": "2",
+      "maxParticipants": 12,
+      "difficultyLevel": "Fácil",
+      "includedItems": [
+        "Transporte marítimo ecológico",
+        "Guía especializado en biología marina",
+        "Hidratación y snacks",
+        "Equipo de observación (binoculares)"
+      ],
+      "requirements": [
+        "No se requiere experiencia previa",
+        "Protector solar biodegradable",
+        "Cámara acuática recomendada"
+      ],
+      "availableDates": [
+        "2025-07-12T08:00:00.000Z",
+        "2025-07-19T08:00:00.000Z",
+        "2025-07-26T08:00:00.000Z",
+        "2025-08-02T08:00:00.000Z",
+        "2025-08-09T08:00:00.000Z"
+      ]
+    },
+    {
+      "id": "5",
+      "title": "Trekking Nocturno en Bosque Nuboso",
+      "description": "Aventura nocturna única en un bosque nuboso para observar la fauna nocturna y experimentar la magia del ecosistema en la oscuridad. Una experiencia sensorial completa.",
+      "type": "Aventura & Naturaleza",
+      "location": "Monteverde, Costa Rica",
+      "duration": {
+        "value": 4,
+        "unit": "hours"
+      },
+      "price": {
+        "amount": 85,
+        "currency": "EUR"
+      },
+      "rating": 4.5,
+      "reviewCount": 28,
+      "images": [
+        "https://images.unsplash.com/photo-1511593358241-7eea1f3c84e5?w=800",
+        "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=800",
+        "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800",
+        "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=800"
+      ],
+      "isSustainable": true,
+      "ecoCertifications": [
+        "Forest Stewardship Council"
+      ],
+      "sustainablePractices": [
+        "Uso de linternas LED de bajo consumo",
+        "Rutas establecidas para minimizar impacto",
+        "Apoyo a la investigación local"
+      ],
+      "localCommunityImpact": "Financiación de programas de conservación del bosque nuboso y empleos locales.",
+      "agencyId": "2",
+      "maxParticipants": 8,
+      "difficultyLevel": "Moderado",
+      "includedItems": [
+        "Guía nocturno especializado",
+        "Equipo de iluminación LED",
+        "Capa impermeable",
+        "Bebida caliente al final del tour"
+      ],
+      "requirements": [
+        "Buena condición física",
+        "Calzado antideslizante",
+        "Ropa abrigada e impermeable"
+      ],
+      "availableDates": [
+        "2025-07-14T20:00:00.000Z",
+        "2025-07-21T20:00:00.000Z",
+        "2025-07-28T20:00:00.000Z",
+        "2025-08-04T20:00:00.000Z",
+        "2025-08-11T20:00:00.000Z"
+      ]
+    },
+    {
+      "id": "6",
+      "title": "Ciclismo de Montaña Eco-Friendly",
+      "description": "Recorrido en bicicleta por senderos de montaña con enfoque en turismo sostenible. Descubre paisajes increíbles mientras contribuyes a la conservación local.",
+      "type": "Deportes & Aventura",
+      "location": "Cordillera de los Andes, Chile",
+      "duration": {
+        "value": 5,
+        "unit": "hours"
+      },
+      "price": {
+        "amount": 120,
+        "currency": "EUR"
+      },
+      "rating": 4.3,
+      "reviewCount": 35,
+      "images": [
+        "https://images.unsplash.com/photo-1544191696-15693be8d1b4?w=800",
+        "https://images.unsplash.com/photo-1571068316344-75bc76f77890?w=800",
+        "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800",
+        "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=800"
+      ],
+      "isSustainable": true,
+      "ecoCertifications": [
+        "Adventure Green",
+        "Mountain Bike Tourism"
+      ],
+      "sustainablePractices": [
+        "Bicicletas eléctricas",
+        "Mantenimiento de senderos",
+        "Educación ambiental"
+      ],
+      "localCommunityImpact": "Apoyo a talleres de bicicletas locales y programas de juventud en deportes.",
+      "agencyId": "2",
+      "maxParticipants": 10,
+      "difficultyLevel": "Moderado a Difícil",
+      "includedItems": [
+        "Bicicleta eléctrica de montaña",
+        "Casco y protecciones",
+        "Guía especializado",
+        "Almuerzo orgánico"
+      ],
+      "requirements": [
+        "Experiencia básica en ciclismo",
+        "Buena condición física",
+        "Ropa deportiva adecuada"
+      ],
+      "availableDates": [
+        "2025-07-16T09:00:00.000Z",
+        "2025-07-23T09:00:00.000Z",
+        "2025-07-30T09:00:00.000Z",
+        "2025-08-06T09:00:00.000Z",
+        "2025-08-13T09:00:00.000Z"
+      ]
+    },
+    {
+      "id": "7",
+      "title": "Inmersión Cultural Maya Sostenible",
+      "description": "Experiencia cultural profunda con comunidades mayas contemporáneas, aprendiendo sobre sus tradiciones, artesanías y conexión con la naturaleza de manera respetuosa.",
+      "type": "Cultural & Educativo",
+      "location": "Yucatán, México",
+      "duration": {
+        "value": 8,
+        "unit": "hours"
+      },
+      "price": {
+        "amount": 180,
+        "currency": "EUR"
+      },
+      "rating": 4.9,
+      "reviewCount": 15,
+      "images": [
+        "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=800",
+        "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800",
+        "https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=800",
+        "https://images.unsplash.com/photo-1539650116574-75c0c6d73f6e?w=800"
+      ],
+      "isSustainable": true,
+      "ecoCertifications": [
+        "Cultural Heritage Tourism",
+        "Community-Based Tourism"
+      ],
+      "sustainablePractices": [
+        "Respeto por tradiciones ancestrales",
+        "Comercio justo",
+        "Preservación del conocimiento tradicional"
+      ],
+      "localCommunityImpact": "El 70% de los ingresos van directamente a la comunidad maya para educación y preservación cultural.",
+      "agencyId": "2",
+      "maxParticipants": 6,
+      "difficultyLevel": "Fácil",
+      "includedItems": [
+        "Guía cultural maya",
+        "Taller de artesanías",
+        "Comida tradicional auténtica",
+        "Ceremonia de bienvenida"
+      ],
+      "requirements": [
+        "Respeto por las tradiciones locales",
+        "Mente abierta",
+        "Interés en aprender"
+      ],
+      "availableDates": [
+        "2025-07-18T10:00:00.000Z",
+        "2025-07-25T10:00:00.000Z",
+        "2025-08-01T10:00:00.000Z",
+        "2025-08-08T10:00:00.000Z",
+        "2025-08-15T10:00:00.000Z"
+      ]
+    },
+    {
+      "id": "8",
+      "title": "Kayak en Manglares con Conservación",
+      "description": "Navegación en kayak a través de manglares para observar la rica biodiversidad mientras participas en actividades de conservación y limpieza del ecosistema.",
+      "type": "Acuático & Conservación",
+      "location": "Laguna de Términos, Campeche",
+      "duration": {
+        "value": 6,
+        "unit": "hours"
+      },
+      "price": {
+        "amount": 95,
+        "currency": "EUR"
+      },
+      "rating": 4.6,
+      "reviewCount": 19,
+      "images": [
+        "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800",
+        "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800",
+        "https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=800",
+        "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800"
+      ],
+      "isSustainable": true,
+      "ecoCertifications": [
+        "Mangrove Conservation Alliance",
+        "Eco-Tourism Mexico"
+      ],
+      "sustainablePractices": [
+        "Kayaks biodegradables",
+        "Limpieza de manglares",
+        "Monitoreo de fauna marina"
+      ],
+      "localCommunityImpact": "Apoyo a programas de conservación de manglares y empleo para pescadores locales.",
+      "agencyId": "2",
+      "maxParticipants": 8,
+      "difficultyLevel": "Fácil",
+      "includedItems": [
+        "Kayak ecológico",
+        "Chaleco salvavidas",
+        "Equipo de limpieza",
+        "Almuerzo de mariscos locales"
+      ],
+      "requirements": [
+        "Saber nadar",
+        "Protector solar biodegradable",
+        "Ropa que se pueda mojar"
+      ],
+      "availableDates": [
+        "2025-07-17T08:00:00.000Z",
+        "2025-07-24T08:00:00.000Z",
+        "2025-07-31T08:00:00.000Z",
+        "2025-08-07T08:00:00.000Z",
+        "2025-08-14T08:00:00.000Z"
+      ]
+    },
+    {
+      "id": "9",
+      "title": "Fotografía de Vida Silvestre Responsable",
+      "description": "Taller de fotografía especializado en vida silvestre con prácticas éticas y sostenibles. Aprende a capturar la belleza natural sin perturbar el ecosistema.",
+      "type": "Educativo & Artístico",
+      "location": "Parque Nacional Corcovado, Costa Rica",
+      "duration": {
+        "value": 7,
+        "unit": "hours"
+      },
+      "price": {
+        "amount": 195,
+        "currency": "EUR"
+      },
+      "rating": 4.8,
+      "reviewCount": 11,
+      "images": [
+        "https://images.unsplash.com/photo-1452570053594-1b985d6ea890?w=800",
+        "https://images.unsplash.com/photo-1540979388789-6cee28a1cdc9?w=800",
+        "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=800",
+        "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800"
+      ],
+      "isSustainable": true,
+      "ecoCertifications": [
+        "Wildlife Photography Ethics",
+        "Nature Conservation Photo"
+      ],
+      "sustainablePractices": [
+        "Fotografía sin flash",
+        "Distancias mínimas respetadas",
+        "Educación sobre comportamiento animal"
+      ],
+      "localCommunityImpact": "Apoyo a rangers locales y programas de conservación del parque nacional.",
+      "agencyId": "2",
+      "maxParticipants": 6,
+      "difficultyLevel": "Moderado",
+      "includedItems": [
+        "Equipo de fotografía profesional",
+        "Guía fotógrafo experto",
+        "Almuerzo en el campo",
+        "Edición básica de fotos"
+      ],
+      "requirements": [
+        "Conocimientos básicos de fotografía",
+        "Cámara propia (opcional)",
+        "Paciencia y sigilo"
+      ],
+      "availableDates": [
+        "2025-07-13T06:00:00.000Z",
+        "2025-07-20T06:00:00.000Z",
+        "2025-07-27T06:00:00.000Z",
+        "2025-08-03T06:00:00.000Z",
+        "2025-08-10T06:00:00.000Z"
+      ]
+    },
+    {
+      "id": "10",
+      "title": "Buceo Sostenible en Arrecifes",
+      "description": "Inmersión en arrecifes de coral con prácticas de buceo sostenible y participación en programas de conservación marina. Una experiencia submarina responsable.",
+      "type": "Acuático & Conservación",
+      "location": "Cozumel, México",
+      "duration": {
+        "value": 6,
+        "unit": "hours"
+      },
+      "price": {
+        "amount": 165,
+        "currency": "EUR"
+      },
+      "rating": 4.7,
+      "reviewCount": 24,
+      "images": [
+        "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800",
+        "https://images.unsplash.com/photo-1583212292454-1fe6229603b8?w=800",
+        "https://images.unsplash.com/photo-1530587191325-3db32d826c18?w=800",
+        "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800"
+      ],
+      "isSustainable": true,
+      "ecoCertifications": [
+        "PADI Eco Center",
+        "Reef Conservation"
+      ],
+      "sustainablePractices": [
+        "Buceo sin tocar",
+        "Protectores solares reef-safe",
+        "Monitoreo de salud coralina"
+      ],
+      "localCommunityImpact": "Financiación de programas de restauración de arrecifes y empleos para buzos locales.",
+      "agencyId": "2",
+      "maxParticipants": 8,
+      "difficultyLevel": "Moderado",
+      "includedItems": [
+        "Equipo de buceo completo",
+        "Instructor certificado",
+        "Almuerzo",
+        "Transporte marítimo"
+      ],
+      "requirements": [
+        "Certificación Open Water",
+        "Experiencia mínima de 10 inmersiones",
+        "Seguro de buceo"
+      ],
+      "availableDates": [
+        "2025-07-15T08:00:00.000Z",
+        "2025-07-22T08:00:00.000Z",
+        "2025-07-29T08:00:00.000Z",
+        "2025-08-05T08:00:00.000Z",
+        "2025-08-12T08:00:00.000Z"
+      ]
     }
   ],
   "reservations": [
@@ -125,15 +593,52 @@
       "id": "1",
       "userId": "1",
       "experienceId": "1",
-      "experienceName": "Senderismo Consciente en la Sierra",
-      "date": "2024-07-15T09:00:00.000Z",
+      "experienceTitle": "Senderismo Consciente en la Sierra",
+      "experienceLocation": "Cusco, Perú (cerca de Pisac)",
+      "experienceDuration": "4 horas",
+      "date": "2025-07-15T09:00:00.000Z",
       "participants": 2,
       "status": "confirmed",
-      "totalPrice": {
-        "amount": 198,
-        "currency": "EUR"
-      },
-      "bookingDate": "2024-06-20T14:30:00.000Z"
+      "totalPrice": 198,
+      "currency": "EUR",
+      "bookingDate": "2025-06-30T14:30:00.000Z",
+      "agencyId": "2",
+      "customerInfo": {
+        "specialRequests": "Preferencia por grupo pequeño",
+        "emergencyContact": "+34 600 123 456"
+      }
+    },
+    {
+      "id": "2",
+      "userId": "1",
+      "experienceId": "2",
+      "experienceTitle": "Ruta Ecológica a Machu Picchu",
+      "experienceLocation": "Cusco, Perú",
+      "experienceDuration": "2 días",
+      "date": "2025-07-20T06:00:00.000Z",
+      "participants": 1,
+      "status": "pending",
+      "totalPrice": 299,
+      "currency": "EUR",
+      "bookingDate": "2025-07-01T10:15:00.000Z",
+      "agencyId": "2",
+      "customerInfo": {
+        "specialRequests": "Primera vez en Machu Picchu",
+        "emergencyContact": "+34 600 123 456"
+      }
+    },
+    {
+      "experienceId": "1",
+      "userId": "1",
+      "agencyId": "2",
+      "date": "1111-11-11",
+      "participants": 2,
+      "totalPrice": 120,
+      "status": "pending",
+      "bookingDate": "2025-07-09T00:35:37.400Z",
+      "experienceTitle": "Senderismo Consciente en la Sierra",
+      "experienceLocation": "Cusco, Perú (cerca de Pisac)",
+      "id": "eXY3oJZ"
     }
   ],
   "reviews": [
@@ -163,6 +668,42 @@
       "rating": 4,
       "comment": "La expedición amazónica fue increíble, me encantó ver el impacto positivo en la comunidad local.",
       "date": "2024-04-20"
+    },
+    {
+      "id": "4",
+      "userId": "1",
+      "userName": "Usuario Turista",
+      "experienceId": "4",
+      "rating": 5,
+      "comment": "El avistamiento de ballenas fue espectacular, me encantó el enfoque sostenible del tour.",
+      "date": "2024-06-10"
+    },
+    {
+      "id": "5",
+      "userId": "1",
+      "userName": "Usuario Turista",
+      "experienceId": "7",
+      "rating": 5,
+      "comment": "Una experiencia cultural increíble. Aprendí mucho sobre la cultura maya y su conexión con la naturaleza.",
+      "date": "2024-05-25"
+    },
+    {
+      "id": "6",
+      "userId": "1",
+      "userName": "Usuario Turista",
+      "experienceId": "9",
+      "rating": 5,
+      "comment": "El taller de fotografía fue increíble, aprendí mucho sobre fotografía responsable de vida silvestre.",
+      "date": "2024-06-15"
+    },
+    {
+      "id": "7",
+      "userId": "1",
+      "userName": "Usuario Turista",
+      "experienceId": "10",
+      "rating": 4,
+      "comment": "Buceo increíble, me encantó participar en el programa de conservación de arrecifes.",
+      "date": "2024-07-02"
     }
   ]
 }
